@@ -1,6 +1,6 @@
 var person = {
   getlist:function (cb) {
-    //go db take data return DATA.
+    //go db take data and callback.
     var list = [
       {
         id: 1,
