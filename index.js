@@ -10,4 +10,5 @@ core.initRouter(function () {
   http.createServer(function (req, res) {
     mimeCore.catchMime(req,res);
   }).listen(setting.ServerPort);
+  console.log("browse ==> http://localhost:"+setting.ServerPort);
 });

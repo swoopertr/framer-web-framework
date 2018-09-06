@@ -13,6 +13,17 @@ function RouteGuider(req, res) {
 
   if (global.routes.hasOwnProperty(routePath)) {
     var item = global.routes[routePath][verbName];
+    var resolver;
+    try{
+      resolver= require.resolve(setting.controllerFolder + item.controller);
+    }
+    catch (err){
+      console.log("Cant resolve module :"+ setting.controllerFolder + item.controller);
+      var controller = require(setting.errorController);
+      controller.error404(req, res);
+      return false;
+    }
+
     var controller = require(setting.controllerFolder + item.controller);
     controller[item.function](req, res);
   } else {

@@ -2,6 +2,14 @@ var fs = require('fs');
 var setting = require('./Config/setting');
 var dir = process.cwd();
 
+
+var GenerateGUID = function () {
+  return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 var getFileNames = function(directory, done) {
   var results = [];
   var dirs = fs.readdirSync(directory);
@@ -78,6 +86,7 @@ var core = {
   callMethods: callMethods,
   readFile: readFile,
   getFileNames:getFileNames,
+  guid:GenerateGUID,
   initRouter: function (cb) {
     loadRouteFile();
     initRouteConfigWatcher();
