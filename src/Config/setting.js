@@ -8,8 +8,8 @@ exports.viewFolder = exports.root+'Pages/';
 exports.allViewFolder = exports.root+'Pages/views/';
 exports.virtualRootPath = '/virt/';
 
-exports.controllerFolder = './controller/';
+exports.controllerFolder = './Controller/';
 exports.jsonPath = "/src/Config/Routes.json";
 exports.ServerPort = 8090;
 
-exports.errorController = './controller/error';
+exports.errorController = './Controller/error';
