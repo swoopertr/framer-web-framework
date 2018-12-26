@@ -4,7 +4,6 @@
   "description": "simpliest and no deps web framework ever.",
   "main": "index.js",
   "scripts": {
-    "test": "no test",
     "start": "node index.js"
   },
   "repository": {
