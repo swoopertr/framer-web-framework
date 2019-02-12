@@ -9,6 +9,11 @@
       "controller": "home", "function": "main", "isCached": false
     }
   },
+  "anan": {
+    "get": {
+      "controller": "home", "function": "ana", "isCached": false
+    }
+  },
   "person/index":{
     "get":{
       "controller":"person", "function":"index", "isCached":false

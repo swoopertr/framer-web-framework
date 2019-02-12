@@ -14,6 +14,10 @@ var home = {
           render.renderData(resps, {data: 'hello'}, 'json');
       });
     });
-  }
+  },
+    ana: function (req, res) {
+      var data = {thedata: 'ana datası'};
+        render.renderData(res,data);
+    }
 };
 module.exports = home;

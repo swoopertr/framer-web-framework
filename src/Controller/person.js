@@ -21,7 +21,8 @@ var person= {
       name:"john",
       email:"aa@a.com"
     };
-    render.renderFull(res, view.views["person"]["index"], data);
+    //render.renderFull(res, view.views["person"]["index"], data);
+      render.renderData(res, data);
   }
 };
 module.exports = person;
