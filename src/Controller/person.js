@@ -1,28 +1,24 @@
-var personManager= require('./../Data/person');
-var render = require('./../Middleware/render');
-var cache= require('./../Middleware/cacheFrame');
-var cookie = require('./../Middleware/cookie');
-var view = require('./../Middleware/ViewPack');
+var personManager = require('./../Data/person'),
+    render = require('./../Middleware/render'),
+    view = require('./../Middleware/ViewPack');
 
-var person= {
-  list:function (req, res) {
-    personManager.getlist(function (data) {
-      var mata = {
-        data: data,
-        kata:123
-      };
-      cookie.setCookie(req,res,'trytocook',1,function (reqp,resp) {
-        render.renderFull(resp, view.views["person"]["list"] , mata);
-      });
-    });
-  },
-  index:function (req, res) {
-    var data = {
-      name:"john",
-      email:"aa@a.com"
-    };
-    //render.renderFull(res, view.views["person"]["index"], data);
-      render.renderData(res, data);
-  }
+var person = {
+    list: function (req, res) {
+        personManager.getlist(function (data) {
+            var data = {
+                data: JSON.stringify(data),
+                kata: 123
+            };
+            render.renderHtml(res, view.views["person"]["list"], data);
+
+        });
+    },
+    index: function (req, res) {
+        let data = {
+            name: "john",
+            email: "aa@a.com"
+        };
+        render.renderData(res, data);
+    }
 };
 module.exports = person;

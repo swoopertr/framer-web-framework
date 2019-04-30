@@ -1,10 +1,7 @@
-<ul>
-<%if(1==1){%>
-    <% for (var i = 0 ; i< this.data.length ;i++){%>
-    <li>
-        <% this.data[i].name %>
-    </li>
-    <%}%>
-    <% }else{ %>
-    <%}%>
-</ul>
+<div style="width: 400px; padding: 10px">
+    {{this.data}}
+    </br>
+    {{this.kata}}
+    </br>
+    bbbbbbbbbbbbb
+</div>

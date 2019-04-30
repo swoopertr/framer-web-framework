@@ -39,7 +39,6 @@ var setSession = function (req, res, key, value, cb, exp ) {
         cb(req, res);
       }
     }
-
     if(typeof exp !== 'undefined'){ //if exp defined
       setTimeout(function () {
         console.log('session silindi ' + sessionId);
@@ -56,7 +55,6 @@ var removeSession = function (req, key) {
   }else {
     delete sessionObj[sessionId][key];
   }
-
 };
 
 var clearSession = function (req) {

@@ -2,10 +2,9 @@ var fs = require('fs');
 var setting = require('./Config/setting');
 var dir = process.cwd();
 
-
 var GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 };

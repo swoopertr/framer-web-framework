@@ -23,35 +23,20 @@ var initWatchfiles = function () {
     });
 };
 
-var tengine = function (html, options) {
-    var re = /<%([^%>]+)?%>/g, reExp = /(^( )?(if|for|else|switch|case|break|{|}))(.*)?/g, code = 'var r=[];\n',
-        cursor = 0, match;
-    var add = function (line, js) {
-        js ? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
-            (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
-        return add;
-    }
-    while (match = re.exec(html)) {
-        add(html.slice(cursor, match.index))(match[1], true);
-        cursor = match.index + match[0].length;
-    }
-    add(html.substr(cursor, html.length - cursor));
-    code += 'return r.join("");';
-    return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
-};
-
 var render = {
     initWatcher: initWatchfiles,
     init: function (cb) {
         var funcArr = [];
-        funcArr.push(getHtmlfooter, getHtmlheader, getMaster);
+        funcArr.push(
+            getHtmlfooter,
+            getHtmlheader,
+            getMaster);
 
         core.callMethods(funcArr, 0, function () {
             core.getFileNames(dir + setting.allViewFolder, function (listfiles) {
                 for (var i = 0; i < listfiles.length; i++) {
                     var content = fs.readFileSync(dir + setting.allViewFolder + listfiles[i].controller + '/' + listfiles[i].view + '.tht', "utf8");
-                    //var cacheKey = listfiles[i].controller +'::'+listfiles[i].view;
-
+                    console.log('content >> ' + dir + setting.allViewFolder + listfiles[i].controller + '/' + listfiles[i].view + '.tht readed' );
                     preCache(content, function (ManuplatedContent) {
                         if (view.views.hasOwnProperty(listfiles[i].controller)) {
                             view.views[listfiles[i].controller][listfiles[i].view] = ManuplatedContent;
@@ -59,14 +44,14 @@ var render = {
                             view.views[listfiles[i].controller] = {};
                             view.views[listfiles[i].controller][listfiles[i].view] = ManuplatedContent;
                         }
-                        //cache.set(cacheKey,ManuplatedContent);
-                        cb && cb();
                     });
                 }
+                console.log('files loading finished.');
+                cb && cb();
             });
         });
     },
-    renderFull: function (res, html, data, cb) {
+    renderHtml: function (res, html, data, cb) {
         dataRender(html, data, function (result) {
             res.writeHead(200, defaults.TheHeaderHtml);
             res.write(result);
@@ -92,12 +77,13 @@ var render = {
 };
 
 var preCache = function (content, cb) {
-    var master = cache.get("main::master");
-    var headerData = cache.get("main::header");
-    var footerData = cache.get("main::footer");
-    master = master.replace(new RegExp('<%footer%>', 'g'), (footerData) ? footerData : '');
-    master = master.replace(new RegExp('<%header%>', 'g'), (headerData) ? headerData : '');
+    var master = cache.get("::master");
+    var headerData = cache.get("::header");
+    var footerData = cache.get("::footer");
+    master = master.replace(new RegExp('<%footer%>', 'g'), footerData ? footerData : '');
+    master = master.replace(new RegExp('<%header%>', 'g'), headerData ? headerData : '');
     master = master.replace(new RegExp('<%page.body%>', 'g'), content);
+    //this makes putting setting proj values in to the all pages. works like
     for (var prop in setting.proj) {
         master = master.replace(new RegExp('<%proj.' + prop + '%>', 'g'), setting.proj[prop]);
     }
@@ -108,36 +94,33 @@ var dataRender = function (html, data, cb) {
     html = html.replace(new RegExp('<%page.header%>', 'g'), ((data.header) ? data.header : ''));
     html = html.replace(new RegExp('<%page.footer%>', 'g'), ((data.footer) ? data.footer : ''));
     html = tengine(html, data);
-    cb && cb();
+    cb && cb(html);
+};
+
+var tengine = function (html, data) {
+    for (var prop in data){
+        html = html.replace(new RegExp('{{this.'+prop+'}}', 'g'), data[prop]);
+    }
+    return html;
 };
 
 var getMaster = function (cb) {
     core.readFile(dir + setting.viewFolder + 'master.tht', function (content) {
-        cache.set("main::master", content);
+        cache.set("::master", content);
         cb && cb();
     });
 };
 var getHtmlheader = function (cb) {
     core.readFile(dir + setting.viewFolder + 'header.tht', function (content) {
-        cache.set("main::header", content);
+        cache.set("::header", content);
         cb && cb();
     });
 };
 var getHtmlfooter = function (cb) {
-    fs.readFile(dir + setting.viewFolder + 'footer.tht', 'utf-8', function (err, content) {
-        if (err) {
-            console.log(err);
-        }
-        cache.set("main::footer", content);
+    core.readFile(dir + setting.viewFolder + 'footer.tht',function (err, content) {
+        cache.set("::footer", content);
         cb && cb();
     });
 };
-var getHomeMain = function () {
-    core.readFile(dir + setting.viewFolder + 'home/main.tht', function (content) {
-        cache.set("home::main", content);
-        cb && cb();
-    });
-}
-
 
 module.exports = render;
