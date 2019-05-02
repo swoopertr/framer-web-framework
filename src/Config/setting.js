@@ -2,6 +2,7 @@ exports.proj = {
   Title: 'Basic web site Frame'
 };
 
+exports.cpuCount = 1; //go as much cpu as your machine can.
 exports.root = '/Presentation/';
 exports.rootPath = exports.root+'assets/';
 exports.viewFolder = exports.root+'Pages/';

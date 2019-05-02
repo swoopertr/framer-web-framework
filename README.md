@@ -49,11 +49,12 @@ When you change something in "Presentation" layer makes reload related view.
 ####Configure Paths
  You can reconfigure path configurations for your enviroment in **src/Config/setting.js**.
 ```bach
+exports.cpuCount = 1; //go as much cpu as your machine can.
 exports.root = '/Presentation/'; 
 exports.rootPath = '/Presentation/assets/'; //determine the assets paths
 exports.viewFolder = '/Presentation/Pages/'; //general wiev folder master template, header and footer.
 exports.allViewFolder = '/Presentation/Pages/views/'; //matches with controller and controller functions
-exports.virtualRootPath = '/virt/';  //means http://localhost:8090/virt/scripts/main.js
+exports.virtualRootPath = '/virt/';  //means virtual folder - http://localhost:8090/virt/scripts/main.js
 
 exports.controllerFolder = './controller/'; 
 exports.jsonPath = "/src/Config/Routes.json";

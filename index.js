@@ -5,7 +5,7 @@ var mimeCore = require('./src/Middleware/mimefilter');
 var render = require('./src/Middleware/render');
 var cluster = require('cluster');
 
-var numCPUs =1; // require('os').cpus().length;
+var numCPUs = (setting.cpuCount === 0) ? require('os').cpus().length : setting.cpuCount;
 console.log(numCPUs);
 
 if (cluster.isMaster) {

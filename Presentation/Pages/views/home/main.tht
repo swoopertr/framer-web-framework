@@ -1,1 +1,1 @@
-veri : >> {{this.thedata}} boşluklu
+veri : >> {{this.thedata}} with spaces
