@@ -11,6 +11,6 @@ exports.virtualRootPath = '/virt/';
 
 exports.controllerFolder = './Controller/';
 exports.jsonPath = "/src/Config/Routes.json";
-exports.ServerPort = 8090;
+exports.ServerPort = process.env.PORT || 5000;
 
 exports.errorController = './Controller/error';
