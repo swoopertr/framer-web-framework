@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/swoopertr/framer-web-framework/issues"
   },
-  "homepage": "https://github.com/swoopertr/framer-web-framework#readme"
+  "homepage": "https://github.com/swoopertr/framer-web-framework#readme",
+  "dependencies": {
+    "sqlite3": "^4.0.8"
+  }
 }
