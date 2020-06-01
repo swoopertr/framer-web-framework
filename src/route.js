@@ -14,6 +14,9 @@ function RouteGuider(req, res) {
     if (global.routes.hasOwnProperty(routePath)) {
         var item = global.routes[routePath][verbName],
             controller = require(setting.controllerFolder + item.controller);
+        if (item .isCached){
+
+        }
         controller[item.function](req, res);
     } else {
         errController.error404(req, res);

@@ -4,7 +4,8 @@
   "description": "simpliest and no deps web framework ever.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "debug": "node --nolazy --inspect-brk -a=9229 index.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,5 @@
     "url": "https://github.com/swoopertr/framer-web-framework/issues"
   },
   "homepage": "https://github.com/swoopertr/framer-web-framework#readme",
-  "dependencies": {
-    "sqlite3": "^4.0.8"
-  }
+  
 }

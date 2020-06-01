@@ -1,7 +1,5 @@
-var db = require('./../Data/sqlite/repo');
 var person = {
     getlist: function (cb) {
-        //go db take data return DATA.
         var list = [
             {
                 id: 1,
@@ -16,13 +14,10 @@ var person = {
                 name: "Tolstoy"
             }
         ];
-        db.select('', function (result) {
-
-            cb && cb(result);
-        });
+        cb && cb(list);
     },
-    create : function (cb) {
-        db.createDb();
+    create: function (cb) {
+
     }
 };
 
