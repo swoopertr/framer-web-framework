@@ -13,7 +13,10 @@ function RouteGuider(req, res) {
     let errController = require(setting.errorController);
     if (global.routes.hasOwnProperty(routePath)) {
         var item = global.routes[routePath][verbName],
-        controller = require(setting.controllerFolder + item.controller);
+            controller = require(setting.controllerFolder + item.controller);
+        if (item .isCached){
+
+        }
         controller[item.function](req, res);
     } else {
         errController.error404(req, res);

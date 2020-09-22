@@ -1,6 +1,5 @@
 var person = {
     getlist: function (cb) {
-        //go db take data return DATA.
         var list = [
             {
                 id: 1,
@@ -15,9 +14,9 @@ var person = {
                 name: "Tolstoy"
             }
         ];
-        if (typeof cb !== 'undefined') {
-            cb(list);
-        }
+        cb && cb(list);
+    },
+    create: function (cb) {
 
     }
 };

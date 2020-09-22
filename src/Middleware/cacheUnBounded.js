@@ -53,14 +53,12 @@ function _findWorkerByPid(workerPid) {
         workerIds = Object.keys(cluster.workers),
         len = workerIds.length,
         worker;
-
     for (; i < len; i++) {
         if (cluster.workers[workerIds[i]].process.pid == workerPid) {
             worker = cluster.workers[workerIds[i]];
             break;
         }
     }
-
     return worker;
 }
 
@@ -108,9 +106,9 @@ function _readCacheValue(message) {
             message.responseParams.expirationTime = cacheEntry.expirationTime;
         }
     }
-
     _sendMessageToWorker(message);
 }
+
 function _storeCacheValue(message) {
     cache[message.requestParams.key] = new CacheEntry(message.requestParams);
     if (message.requestParams.ttl) {
@@ -155,25 +153,20 @@ function _purgeCache() {
 }
 
 function _masterIncomingMessagesHandler(message) {
-    var handler;
 
     logger.log('Master received message:', message);
 
     if (!message || message.channel !== 'memored') return false;
 
-    handler = masterMessagesHandlerMap[message.type] || masterMessagesHandlerMap.unknown;
+    var handler = masterMessagesHandlerMap[message.type] || masterMessagesHandlerMap.unknown;
 
     handler(message);
 }
 
 function _workerIncomingMessagesHandler(message) {
-    logger.log('Worker received message:', message);
-
-    var pendingMessage;
-
     if (!message || message.channel !== 'memored') return false;
 
-    pendingMessage = activeMessages[message.id];
+    var pendingMessage = activeMessages[message.id];
     if (pendingMessage && pendingMessage.callback) {
         pendingMessage.callback.apply(null, _getResultParamsValues(message.responseParams));
         delete activeMessages[message.id];
@@ -191,13 +184,6 @@ if (cluster.isMaster) {
     cluster.on('fork', function(worker) {
         worker.on('message', _masterIncomingMessagesHandler);
     });
-
-    // TODO: Only for testing purposes
-    // setInterval(function() {
-    //	logger.log('\n------------------------------------------');
-    //	logger.log(cache);
-    //	logger.log('------------------------------------------\n');
-    // }, 2000).unref();
 
 } else {
 
@@ -415,6 +401,3 @@ module.exports = {
     reset: _reset,
     keys: _keys
 };
-
-
-

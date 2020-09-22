@@ -7,15 +7,10 @@ var header = {
     }else{
       res.setHeader(header.key, header.value);
     }
-    if (typeof cb === "function") {
-      cb(res);
-    }
+    cb && cb(res);
   },
   removeHeader:function (res, key, cb) {
     //todo: remove single header...
   }
 };
-
-
-
 module.exports = header;

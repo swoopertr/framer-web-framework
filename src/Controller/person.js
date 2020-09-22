@@ -13,6 +13,9 @@ var person = {
 
         });
     },
+    create: function(req, res){
+        personManager.create();
+    },
     index: function (req, res) {
         let data = {
             name: "john",

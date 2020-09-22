@@ -97,7 +97,7 @@ var core = {
         cb(url.indexOf(setting.virtualRootPath) != -1);
     },
     getExtention: function (url) {
-        return url.substring(url.lastIndexOf('.'));
+        return url.match(/\.[0-9a-z]+$/i)[0];
     }
 };
 module.exports = core;
