@@ -12,18 +12,8 @@ function RouteGuider(req, res) {
     }
     let errController = require(setting.errorController);
     if (global.routes.hasOwnProperty(routePath)) {
-        var item = global.routes[routePath][verbName];
-            /*resolver;
-        try {
-            resolver = require.resolve(setting.controllerFolder + item.controller);
-        }
-        catch (err) {
-            console.log("Cant resolve module :" + setting.controllerFolder + item.controller);
-            errController.error404(req, res);
-            return;
-        }*/
-
-        var controller = require(setting.controllerFolder + item.controller);
+        var item = global.routes[routePath][verbName],
+        controller = require(setting.controllerFolder + item.controller);
         controller[item.function](req, res);
     } else {
         errController.error404(req, res);

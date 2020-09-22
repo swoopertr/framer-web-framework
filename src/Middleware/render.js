@@ -36,7 +36,7 @@ var render = {
             core.getFileNames(dir + setting.allViewFolder, function (listfiles) {
                 for (var i = 0; i < listfiles.length; i++) {
                     var content = fs.readFileSync(dir + setting.allViewFolder + listfiles[i].controller + '/' + listfiles[i].view + '.tht', "utf8");
-                    console.log('content >> ' + dir + setting.allViewFolder + listfiles[i].controller + '/' + listfiles[i].view + '.tht readed' );
+                    console.log('content >> ' + dir + setting.allViewFolder + listfiles[i].controller + '/' + listfiles[i].view + '.tht readed');
                     preCache(content, function (ManuplatedContent) {
                         if (view.views.hasOwnProperty(listfiles[i].controller)) {
                             view.views[listfiles[i].controller][listfiles[i].view] = ManuplatedContent;
@@ -98,8 +98,8 @@ var dataRender = function (html, data, cb) {
 };
 
 var tengine = function (html, data) {
-    for (var prop in data){
-        html = html.replace(new RegExp('{{this.'+prop+'}}', 'g'), data[prop]);
+    for (var prop in data) {
+        html = html.replace(new RegExp('{{this.' + prop + '}}', 'g'), data[prop]);
     }
     return html;
 };
@@ -117,7 +117,7 @@ var getHtmlheader = function (cb) {
     });
 };
 var getHtmlfooter = function (cb) {
-    core.readFile(dir + setting.viewFolder + 'footer.tht',function (err, content) {
+    core.readFile(dir + setting.viewFolder + 'footer.tht', function (err, content) {
         cache.set("::footer", content);
         cb && cb();
     });

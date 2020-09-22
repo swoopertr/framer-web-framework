@@ -45,9 +45,10 @@ var mimeRequest = {
         }
       }else {
         //adding general header.
-        header.addHeader(res,{key: 'sacma-header',value: 'sacmeValue'}, function (resp) {
+       /* header.addHeader(res,{key: 'sacma-header',value: 'sacmeValue'}, function (resp) {
             route.guideRequest(req, resp);
-        });
+        });*/
+        route.guideRequest(req, res);
       }
     });
   }
