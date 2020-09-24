@@ -56,6 +56,7 @@ var initRouteConfigWatcher = function () {
             global.fsTimeout = setTimeout(function () {
                 loadRouteFile();
                 console.log('route config reloaded');
+                clearTimeout(global.fsTimeout);
                 delete global.fsTimeout;
             }, 2000);
         }

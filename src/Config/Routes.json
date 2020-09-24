@@ -13,7 +13,7 @@
       "isCached": false
     }
   },
-  "anan": {
+  "baban": {
     "get": {
       "controller": "home",
       "function": "ana",
@@ -46,4 +46,4 @@
       "isCached": false
     }
   }
-};
+}

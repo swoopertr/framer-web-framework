@@ -10,7 +10,6 @@ var person = {
                 kata: 123
             };
             render.renderHtml(res, view.views["person"]["list"], data);
-
         });
     },
     create: function(req, res){
