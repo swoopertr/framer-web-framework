@@ -1,16 +1,29 @@
-exports.proj = {
-  Title: 'Basic web site Frame'
+var settings ={
+  proj : {
+    Title: 'Basic web site Frame'
+  }
 };
+settings.DdosLimitOptions = {
+  seconds: 60,
+  requestLimit:20,
+  blockSeconds: 30
+};
+settings.tokenExpireTimeLimit= 6;
+settings.superAdminGroupId = 3;
+settings.cpuCount = 1; //go as much cpu as your machine can.
+var numCPUs = (settings.cpuCount === 0) ? require('os').cpus().length : settings.cpuCount;
+console.log('running on ' + numCPUs + ' instance');
 
-exports.cpuCount = 1; //go as much cpu as your machine can.
-exports.root = '/Presentation/';
-exports.rootPath = exports.root+'assets/';
-exports.viewFolder = exports.root+'Pages/';
-exports.allViewFolder = exports.root+'Pages/views/';
-exports.virtualRootPath = '/virt/';
+settings.root = '\\Presentation\\';
+settings.rootPath = settings.root+'assets\\';
+settings.viewFolder = settings.root+'Pages\\';
+settings.allViewFolder = settings.root+'Pages\\views\\';
+settings.virtualRootPath = '\\virt\\';
 
-exports.controllerFolder = './Controller/';
-exports.jsonPath = "/src/Config/Routes.json";
-exports.ServerPort = process.env.PORT || 5000;
+settings.controllerFolder = '.\\Controller\\';
+settings.jsonPath = "\\src\\Config\\Routes.json";
+settings.ServerPort = process.env.PORT || 5000;
 
-exports.errorController = './Controller/error';
+settings.errorController = '.\\Controller\\error';
+
+module.exports = settings;

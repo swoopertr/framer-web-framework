@@ -1,8 +1,27 @@
 'use strict';
+
 var cluster = require('cluster');
+
+var logger = {
+    log: function () {
+    },
+    warn: function () {
+    }
+};
+
 var messagesCounter = 0;
+
 var activeMessages = {};
+
 var purgeIntervalObj;
+
+/*
+ message
+ - workerPid
+ - type
+ - requestParams
+ */
+
 var cache = {};
 
 var masterMessagesHandlerMap = {
@@ -13,7 +32,7 @@ var masterMessagesHandlerMap = {
     'size': _getCacheSize,
     'keys': _getCacheKeys,
     'unknown': function (msg) {
-        console.warn('Received an invalid message type:', msg.type);
+        logger.warn('Received an invalid message type:', msg.type);
     }
 };
 
@@ -30,15 +49,17 @@ function CacheEntry(data) { // ttl -> milliseconds
 CacheEntry.prototype.isExpired = function () {
     return this.expirationTime && Date.now() > this.expirationTime;
 };
+
 CacheEntry.prototype.toString = function () {
     return "Key: " + this.key + "; Value: " + this.value + "; Ttl: " + this.ttl;
 };
 
 function _findWorkerByPid(workerPid) {
-    var workerIds = Object.keys(cluster.workers),
+    var i = 0,
+        workerIds = Object.keys(cluster.workers),
         len = workerIds.length,
         worker;
-    for (var i = 0; i < len; i++) {
+    for (; i < len; i++) {
         if (cluster.workers[workerIds[i]].process.pid == workerPid) {
             worker = cluster.workers[workerIds[i]];
             break;
@@ -138,209 +159,29 @@ function _purgeCache() {
 }
 
 function _masterIncomingMessagesHandler(message) {
-    console.log('Master received message:', message);
+
+    logger.log('Master received message:', message);
+
     if (!message || message.channel !== 'memored') return false;
+
     var handler = masterMessagesHandlerMap[message.type] || masterMessagesHandlerMap.unknown;
+
     handler(message);
 }
 
 function _workerIncomingMessagesHandler(message) {
     if (!message || message.channel !== 'memored') return false;
+
     var pendingMessage = activeMessages[message.id];
     if (pendingMessage && pendingMessage.callback) {
         pendingMessage.callback.apply(null, _getResultParamsValues(message.responseParams));
         delete activeMessages[message.id];
     }
-}
 
-function _setup(options) {
-    options = options || {};
-
-    if (cluster.isMaster) {
-        if (options.purgeInterval) {
-            purgeIntervalObj = setInterval(function () {
-                _purgeCache();
-            }, options.purgeInterval).unref();
-        }
-    }
-}
-
-function _read(key, cb) {
-    if (cluster.isWorker) {
-        _sendMessageToMaster({
-            type: 'read',
-            requestParams: {
-                key: key
-            },
-            callback: cb
-        });
-    } else {
-        console.warn('Memored::read# Cannot call this function from master process');
-    }
-}
-
-function _multiRead(keys, cb) {
-    var counter = 0,
-        results = {};
-
-    function _multiReadCallback(err, value, expirationTime) {
-        if (value) {
-            results[keys[counter]] = {
-                value: value,
-                expirationTime: expirationTime
-            };
-        }
-
-        if (++counter >= keys.length) {
-            cb && cb(err, results);
-        }
-    }
-
-    if (cluster.isWorker) {
-        if (!Array.isArray(keys)) {
-            return console.warn('Memored::multiRead# First parameter must be an array');
-        }
-
-        keys.forEach(function (key) {
-            _read(key, _multiReadCallback);
-        });
-    } else {
-        console.warn('Memored::read# Cannot call this function from master process');
-    }
-}
-
-function _store(key, value, ttl, cb) {
-    if (cluster.isWorker) {
-        if (typeof ttl === 'function') {
-            cb = ttl;
-            ttl = undefined;
-        }
-
-        _sendMessageToMaster({
-            type: 'store',
-            requestParams: {
-                key: key,
-                value: value,
-                ttl: ttl
-            },
-            callback: cb
-        });
-    } else {
-        console.warn('Memored::store# Cannot call this function from master process');
-    }
-}
-
-function _multiStore(map, ttl, cb) {
-    var keys,
-        _expirationTime,
-        counter = 0;
-
-    if (cluster.isWorker) {
-        if (typeof ttl === 'function') {
-            cb = ttl;
-            ttl = undefined;
-        }
-
-        keys = Object.keys(map);
-        keys.forEach(function (key) {
-            _store(key, map[key], ttl, function _callback(err, expirationTime) {
-                counter++;
-                if (keys[0] === key) {
-                    _expirationTime = expirationTime;
-                } else if (counter === keys.length && cb) {
-                    cb(err, _expirationTime);
-                }
-            });
-        });
-    } else {
-        console.warn('Memored::multiStore# Cannot call this function from master process');
-    }
-}
-
-function _remove(key, cb) {
-    if (cluster.isWorker) {
-        _sendMessageToMaster({
-            type: 'remove',
-            requestParams: {
-                key: key
-            },
-            callback: cb
-        });
-    } else {
-        console.warn('Memored::remove# Cannot call this function from master process');
-    }
-}
-
-function _multiRemove(keys, cb) {
-    var counter = 0;
-
-    function _multiRemoveCallback() {
-        if (++counter >= keys.length && cb) {
-            cb();
-        }
-    }
-
-    if (cluster.isWorker) {
-        if (!Array.isArray(keys)) {
-            return console.warn('Memored::multiRemove# First parameter must be an array');
-        }
-
-        keys.forEach(function (key) {
-            _remove(key, _multiRemoveCallback);
-        });
-
-    } else {
-        console.warn('Memored::remove# Cannot call this function from master process');
-    }
-}
-
-function _clean(cb) {
-    if (cluster.isWorker) {
-        _sendMessageToMaster({
-            type: 'clean',
-            callback: cb
-        });
-    } else {
-        console.warn('Memored::clean# Cannot call this function from master process');
-    }
-}
-
-function _size(cb) {
-    if (cluster.isWorker) {
-        _sendMessageToMaster({
-            type: 'size',
-            callback: cb
-        });
-    } else {
-        setImmediate(cb, null, {
-            size: Object.keys(cache).length
-        });
-    }
-}
-
-function _reset() {
-    if (cluster.isMaster) {
-        clearInterval(purgeIntervalObj);
-        cache = {};
-    } else {
-        console.warn('Memored::reset# Cannot call this function from a worker process');
-    }
-}
-
-function _keys(cb) {
-    if (cluster.isWorker) {
-        _sendMessageToMaster({
-            type: 'keys',
-            callback: cb
-        });
-    } else {
-        setImmediate(cb, {
-            keys: Object.keys(cache)
-        });
-    }
 }
 
 if (cluster.isMaster) {
+
     Object.keys(cluster.workers).forEach(function (workerId) {
         cluster.workers[workerId].on('message', _masterIncomingMessagesHandler);
     });
@@ -354,7 +195,201 @@ if (cluster.isMaster) {
     process.on('message', _workerIncomingMessagesHandler);
 }
 
+function _setup(options) {
+    options = options || {};
+    logger = options.logger || logger;
+    if (cluster.isMaster) {
+        if (options.mockData) {
+            options.mockData.forEach(function (mock) {
+                // key, value, ttl
+                cache[mock.key] = new CacheEntry(mock);
+            });
+        }
+        if (options.purgeInterval) {
+            purgeIntervalObj = setInterval(function () {
+                _purgeCache();
+            }, options.purgeInterval).unref();
+        }
+    }
+}
+
+function _read(key, callback) {
+    if (cluster.isWorker) {
+        _sendMessageToMaster({
+            type: 'read',
+            requestParams: {
+                key: key
+            },
+            callback: callback
+        });
+    } else {
+        logger.warn('Memored::read# Cannot call this function from master process');
+    }
+}
+
+function _multiRead(keys, callback) {
+    var counter = 0,
+        results = {};
+
+    function _multiReadCallback(err, value, expirationTime) {
+        if (value) {
+            results[keys[counter]] = {
+                value: value,
+                expirationTime: expirationTime
+            };
+        }
+
+        if (++counter >= keys.length) {
+            callback(err, results);
+        }
+    }
+
+    if (cluster.isWorker) {
+        if (!Array.isArray(keys)) {
+            return logger.warn('Memored::multiRead# First parameter must be an array');
+        }
+
+        keys.forEach(function (key) {
+            _read(key, _multiReadCallback);
+        });
+    } else {
+        logger.warn('Memored::read# Cannot call this function from master process');
+    }
+}
+
+function _store(key, value, ttl, callback) {
+    if (cluster.isWorker) {
+        if (typeof ttl === 'function') {
+            callback = ttl;
+            ttl = undefined;
+        }
+
+        _sendMessageToMaster({
+            type: 'store',
+            requestParams: {
+                key: key,
+                value: value,
+                ttl: ttl
+            },
+            callback: callback
+        });
+    } else {
+        logger.warn('Memored::store# Cannot call this function from master process');
+    }
+}
+
+function _multiStore(map, ttl, callback) {
+    var keys,
+        _expirationTime,
+        counter = 0;
+
+    if (cluster.isWorker) {
+        if (typeof ttl === 'function') {
+            callback = ttl;
+            ttl = undefined;
+        }
+
+        keys = Object.keys(map);
+        keys.forEach(function (key) {
+            _store(key, map[key], ttl, function _callback(err, expirationTime) {
+                counter++;
+                if (keys[0] === key) {
+                    _expirationTime = expirationTime;
+                } else if (counter === keys.length && callback) {
+                    callback(err, _expirationTime);
+                }
+            });
+        });
+    } else {
+        logger.warn('Memored::multiStore# Cannot call this function from master process');
+    }
+}
+
+function _remove(key, callback) {
+    if (cluster.isWorker) {
+        _sendMessageToMaster({
+            type: 'remove',
+            requestParams: {
+                key: key
+            },
+            callback: callback
+        });
+    } else {
+        logger.warn('Memored::remove# Cannot call this function from master process');
+    }
+}
+
+function _multiRemove(keys, callback) {
+    var counter = 0;
+
+    function _multiRemoveCallback() {
+        if (++counter >= keys.length && callback) {
+            callback();
+        }
+    }
+
+    if (cluster.isWorker) {
+        if (!Array.isArray(keys)) {
+            return logger.warn('Memored::multiRemove# First parameter must be an array');
+        }
+
+        keys.forEach(function (key) {
+            _remove(key, _multiRemoveCallback);
+        });
+
+    } else {
+        logger.warn('Memored::remove# Cannot call this function from master process');
+    }
+}
+
+function _clean(callback) {
+    if (cluster.isWorker) {
+        _sendMessageToMaster({
+            type: 'clean',
+            callback: callback
+        });
+    } else {
+        logger.warn('Memored::clean# Cannot call this function from master process');
+    }
+}
+
+function _size(callback) {
+    if (cluster.isWorker) {
+        _sendMessageToMaster({
+            type: 'size',
+            callback: callback
+        });
+    } else {
+        setImmediate(callback, null, {
+            size: Object.keys(cache).length
+        });
+    }
+}
+
+function _reset() {
+    if (cluster.isMaster) {
+        clearInterval(purgeIntervalObj);
+        cache = {};
+    } else {
+        logger.warn('Memored::reset# Cannot call this function from a worker process');
+    }
+}
+
+function _keys(callback) {
+    if (cluster.isWorker) {
+        _sendMessageToMaster({
+            type: 'keys',
+            callback: callback
+        });
+    } else {
+        setImmediate(callback, {
+            keys: Object.keys(cache)
+        });
+    }
+}
+
 module.exports = {
+    version: 1.1,
     setup: _setup,
     read: _read,
     multiRead: _multiRead,

@@ -6,43 +6,10 @@
       "isCached": false
     }
   },
-  "harbim/liste": {
+  "RickAndMorty/list": {
     "get": {
       "controller": "home",
-      "function": "main",
-      "isCached": false
-    }
-  },
-  "baban": {
-    "get": {
-      "controller": "home",
-      "function": "ana",
-      "isCached": false
-    }
-  },
-  "person/index": {
-    "get": {
-      "controller": "person",
-      "function": "index",
-      "isCached": false
-    }
-  },
-  "login": {
-    "get": {
-      "controller": "login",
-      "function": "checkLogin",
-      "isCached": false
-    },
-    "post": {
-      "controller": "login",
-      "function": "checkLoginPost",
-      "isCached": false
-    }
-  },
-  "list": {
-    "get": {
-      "controller": "person",
-      "function": "list",
+      "function": "RickAndMortyPage",
       "isCached": false
     }
   }

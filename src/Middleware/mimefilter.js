@@ -48,6 +48,13 @@ var mimeRequest = {
        /* header.addHeader(res,{key: 'sacma-header',value: 'sacmeValue'}, function (resp) {
             route.guideRequest(req, resp);
         });*/
+
+        /*var ip = core.getCallerIP(req);
+        //if (rateLimiter.check(ip)) {
+          route.guideRequest(req, res);
+        } else {
+          render.renderFail(res, 429, 'http 429 too many request', '');
+        }*/
         route.guideRequest(req, res);
       }
     });
