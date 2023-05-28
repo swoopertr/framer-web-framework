@@ -1,16 +1,16 @@
-{
-  "home": {
-    "get": {
-      "controller": "home",
-      "function": "main",
-      "isCached": false
-    }
+[
+  {
+    "path": "/home",
+    "method": "get",
+    "controller": "home",
+    "function": "main",
+    "isCached": false
   },
-  "RickAndMorty/list": {
-    "get": {
-      "controller": "home",
-      "function": "RickAndMortyPage",
-      "isCached": false
-    }
+  {
+    "path":"/RickAndMorty/list",
+    "method":"get",
+    "controller":"home",
+    "function":"RickAndMortyPage",
+    "isCached":false
   }
-}
+]

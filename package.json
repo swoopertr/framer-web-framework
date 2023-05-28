@@ -18,6 +18,10 @@
   ],
   "author": "tunc kiral",
   "license": "ISC",
+  "dependencies": {
+    "@medley/router": "^0.2.1",
+    "formidable": "^2.0.1"
+  },
   "bugs": {
     "url": "https://github.com/swoopertr/framer-web-framework/issues"
   },

@@ -1,38 +1,40 @@
-var fs = require('fs');
-var setting = require('./Config/setting');
-var dir = process.cwd();
+let fs = require('fs');
+let setting = require('./Config/setting');
+let dir = process.cwd();
+let formidable = require('formidable');
+let events = require('events');
 
-var GenerateGUID = function () {
+let GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 };
-var GenerateToken = function () {
+let GenerateToken = function () {
     return 'xxxxxxxxxxxx4xxxxxxyyyyxxxxxxxxxxxxyyyyxyxyxyxyxyx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 35 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(35);
     });
 };
 
-var GeneratePassword = function () {
+let GeneratePassword = function () {
     return Math.random().toString(36).slice(-8);
 };
 
-var getFileNames = function (directory, done) {
-    var results = [];
-    var dirs = fs.readdirSync(directory);
-    for (var i = 0; i < dirs.length; i++) {
-        var files = fs.readdirSync(directory + dirs[i]);
-        for (var j = 0; j < files.length; j++) {
-            var obj = {controller: dirs[i], view: files[j].replace(/\.[^/.]+$/, "")};
+let getFileNames = function (directory, done) {
+    let results = [];
+    let dirs = fs.readdirSync(directory);
+    for (let i = 0; i < dirs.length; i++) {
+        let files = fs.readdirSync(directory + dirs[i]);
+        for (let j = 0; j < files.length; j++) {
+            let obj = {controller: dirs[i], view: files[j].replace(/\.[^/.]+$/, "")};
             results.push(obj);
         }
     }
     done(results);
 };
 
-var readFile = function (file, cb) {
+let readFile = function (file, cb) {
     fs.readFile(file, 'utf-8', function (err, data) {
         if (err) {
             console.log(err);
@@ -41,7 +43,7 @@ var readFile = function (file, cb) {
     });
 };
 
-var getfileContentImg = function (res, filePath) {
+let getfileContentImg = function (res, filePath) {
     fs.readFile(dir + filePath, function (err, data) {
         if (err) {
             console.log(err);
@@ -50,7 +52,7 @@ var getfileContentImg = function (res, filePath) {
     });
 };
 
-var getfileContent = function (res, filePath) {
+let getfileContent = function (res, filePath) {
     fs.readFile(dir + filePath, function (err, content) {
         if (err) {
             console.log(err);
@@ -60,7 +62,7 @@ var getfileContent = function (res, filePath) {
     });
 };
 
-var initRouteConfigWatcher = function () {
+let initRouteConfigWatcher = function () {
     fs.watch(dir + setting.jsonPath, function (err, content) {
         if (!global.fsTimeout) {
             global.fsTimeout = setTimeout(function () {
@@ -73,14 +75,14 @@ var initRouteConfigWatcher = function () {
     });
 };
 
-var loadRouteFile = function () {
+let loadRouteFile = function () {
     fs.readFile(dir + setting.jsonPath, 'utf-8', function (err, content) {
-        var routes = JSON.parse(content);
+        let routes = JSON.parse(content);
         global.routes = routes;
     });
 };
 
-var callMethods = function (methods, i, cb) {
+let callMethods = function (methods, i, cb) {
     if (i === methods.length - 1) {
         methods[i](function () {
             cb && cb();
@@ -92,19 +94,17 @@ var callMethods = function (methods, i, cb) {
     }
 };
 
-
-var queryStringToObject = function (search) {
+let queryStringToObject = function (search) {
     return  JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
         return key === "" ? value : decodeURIComponent(value)
     });
 };
 
-
-var request = {
+let request = {
     get: function (baseUri, path, headers, cb){
-        var http = require("https");
+        let http = require("https");
 
-        var options = {
+        let options = {
             "method": "GET",
             "hostname": baseUri,
             "port": null,
@@ -114,16 +114,16 @@ var request = {
             options.headers = headers;
         }
 
-        var getReq = http.request(options, function (res) {
-            var chunks = [];
+        let getReq = http.request(options, function (res) {
+            let chunks = [];
 
             res.on("data", function (chunk) {
                 chunks.push(chunk);
             });
 
             res.on("end", function () {
-                var body = Buffer.concat(chunks);
-                var result =JSON.parse(body.toString());
+                let body = Buffer.concat(chunks);
+                let result =JSON.parse(body.toString());
                 cb && cb(result);
             });
         });
@@ -132,8 +132,8 @@ var request = {
     },
     post: function (baseUri, path, port, headers, body, cb){
 
-        var http = require("http");
-        var options = {
+        let http = require("http");
+        let options = {
             "method": "POST",
             "hostname": baseUri,
             "port": "80",
@@ -143,15 +143,15 @@ var request = {
             }
         };
 
-        var req = http.request(options, function (res) {
-            var result = [];
+        let req = http.request(options, function (res) {
+            let result = [];
 
             res.on("data", function (chunk) {
                 result.push(chunk);
             });
 
             res.on("end", function () {
-                var result = Buffer.concat(result);
+                let result = Buffer.concat(result);
                 console.log(result.toString());
                 cb && cb(result);
             });
@@ -177,14 +177,13 @@ var request = {
     }
 };
 
-
-var getDictionaryFormData = function (formData, fields, cb) {
-    var result = {};
-    var hashes = decodeURIComponent(formData.toString());
-    var datas = hashes.split('&');
-    for (var i = 0; i < datas.length; i++) {
-        var itemObj = datas[i].split('=');
-        for (var j = 0; j < fields.length; j++) {
+let getDictionaryFormData = function (formData, fields, cb) {
+    let result = {};
+    let hashes = decodeURIComponent(formData.toString());
+    let datas = hashes.split('&');
+    for (let i = 0; i < datas.length; i++) {
+        let itemObj = datas[i].split('=');
+        for (let j = 0; j < fields.length; j++) {
             if (fields[j] === itemObj[0]) {
                 result[fields[j]] = itemObj[1];
             }
@@ -193,8 +192,8 @@ var getDictionaryFormData = function (formData, fields, cb) {
     cb && cb(result);
 };
 
-var getActionName = function (actionId) {
-    var result = "";
+let getActionName = function (actionId) {
+    let result = "";
     if (actionId == 1) {
         result = "Insert";
     } else if(actionId == 2){
@@ -205,14 +204,14 @@ var getActionName = function (actionId) {
     return result;
 };
 
-var postHandler = function (req, res) {
+let postHandler = function (req, res) {
     if (req.method !== "POST") {
         return;
     }
-    var routeName = req.url.split('/');
-    var routePath = routeName[1].split('?')[0];
+    let routeName = req.url.split('/');
+    let routePath = routeName[1].split('?')[0];
     if (routes.hasOwnProperty(routePath)) {
-        var item = routes[routePath];
+        let item = routes[routePath];
         if (item.hasOwnProperty('file')) {
             return;
         }
@@ -224,34 +223,65 @@ var postHandler = function (req, res) {
             }
     });
     req.on('end', function () {
-        var body = req.formData.toString('utf-8');
+        let body = req.formData.toString('utf-8');
         body = body.replace(/\+/g, ' ');
         req.formData = JSON.parse(body);
         //console.log(req.formData);
     });
 };
 
-var getCallerIP = function(req) {
-    var ip = req.headers['x-forwarded-for'] ||
+let getCallerIP = function(req) {
+    let ip = req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
     return ip;
 }
 
-var defineFriendlyDate = function () {
-    Date.prototype.friendlyDate = function (){
-        var d = this.getDate();
-        var m = this.getMonth() + 1; //Month from 0 to 11
-        var y = this.getFullYear();
-        var h = this.getHours();
-        var mi = this.getMinutes();
-        var s = this.getSeconds();
-        return (d<= 9 ? '0' + d : d) + '-' + (m<=9 ? '0' + m : m) + '-' + y + ' ' +(h<=9 ? '0' + h : h) + ':' + (mi<=9 ? '0' + mi : mi) + ':' + (s<=9 ? '0' + s : s);
+let defineEmailValidation = function () {
+    String.prototype.validateEmail = function () {
+        //let mailformat = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(this).toLowerCase());
+    }
+}
+
+let emitter_definitions = function(){
+    let emitter = new events.EventEmitter();
+    global.events = emitter;
+};
+
+let checkVirtual = function(_url, cb) {
+    cb && cb(_url.indexOf(setting.virtualRootPath) != -1);
+};
+
+let getExtention = function (_url) {
+    return _url.match(/\.[0-9a-z]+$/i)[0];
+}
+
+var formatDate = function(date){
+    let d = new Date(date);
+    let dformat = `${(d.getMonth()+1).toString().padStart(2,"0")}-${d.getDate().toString().padStart(2,"0")}-${d.getFullYear().toString().padStart(2,"0")} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}:${d.getSeconds().toString().padStart(2,"0")}`;
+    let dDate = `${(d.getMonth()+1).toString().padStart(2,"0")}-${d.getDate().toString().padStart(2,"0")}-${d.getFullYear().toString().padStart(2,"0")}`;
+    let dTime =`${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}:${d.getSeconds().toString().padStart(2,"0")}`;
+    /*if(dformat == 'NaN-NaN-NaN NaN:NaN:NaN'){ // date format is mm-dd-yyyy hh:MM:ss
+      return date;
+    }*/
+    let result = {
+        full: dformat,
+        date : dDate,
+        time : dTime
+    };
+    return result;
+}
+
+let defineFriendlyDate = function () {
+    Date.prototype.friendlyDate = function () {
+        return formatDate(this);
     }
 };
 
-var defineTokenValidation = function () {
+let defineTokenValidation = function () {
     String.prototype.validateToken = function (){
         if (this === undefined){
             return false;
@@ -262,40 +292,31 @@ var defineTokenValidation = function () {
     }
 };
 
-var defineEmailValidation = function () {
-    String.prototype.validateEmail = function () {
-        //var mailformat = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
-        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(this).toLowerCase());
-    }
+let redirect = function (res, path) {
+    res.writeHead(302, {Location: path});
+    res.end();
 }
-var core = {
-    getfileContentImg: getfileContentImg,
-    getfileContent: getfileContent,
-    callMethods: callMethods,
-    readFile: readFile,
-    getFileNames: getFileNames,
+
+let core = {
+    redirect,
+    defineTokenValidation,
+    defineFriendlyDate,
+    defineEmailValidation,
+    emitter_definitions,
+    getfileContentImg,
+    getfileContent,
+    callMethods,
+    readFile,
+    getFileNames,
     guid: GenerateGUID,
-    GenerateToken:GenerateToken,
-    GeneratePassword:GeneratePassword,
+    GenerateToken,
+    GeneratePassword,
     postHandler:postHandler,
-    getDictionaryFormData:getDictionaryFormData,
-    getCallerIP:getCallerIP,
-    request: request,
-    initRouter: function (cb) {
-        loadRouteFile();
-        initRouteConfigWatcher();
-        defineFriendlyDate();
-        defineTokenValidation();
-        defineEmailValidation();
-        cb();
-    },
-    checkVirtual: function (url, cb) {
-        cb(url.indexOf(setting.virtualRootPath) != -1);
-    },
-    getExtention: function (url) {
-        return url.match(/\.[0-9a-z]+$/i)[0];
-    },
-    getActionName: getActionName
+    getDictionaryFormData,
+    getCallerIP,
+    request,
+    checkVirtual,
+    getExtention,
+    getActionName
 };
 module.exports = core;

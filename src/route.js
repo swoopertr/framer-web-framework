@@ -1,27 +1,55 @@
-var setting = require('./Config/setting');
+let dir = process.cwd();
+let fs = require('fs');
+let Router = require('@medley/router');
+let setting = require('./Config/setting');
+let render = require('./Middleware/render');
+let core = require('./Core');
+let router = new Router();
 
-function RouteGuider(req, res) {
-    var routePath = req.url.split('?')[0];
-    var verbName = req.method.toLowerCase();
+let loadRouteFile = function () {
+    fs.readFile(dir + setting.jsonPath, 'utf-8',async function (err, content) {
+        let routes = JSON.parse(content);
+        global.routes = routes;
+        await registerRoutes();
+    });
+};
 
-    if (routePath[0] === "/") {
-        routePath = routePath.substring(1);
-    }
-    if (routePath == "") {
-        routePath = "home";
-    }
-    let errController = require(setting.errorController);
-    if (global.routes.hasOwnProperty(routePath)) {
-        var item = global.routes[routePath][verbName],
-            controller = require(setting.controllerFolder + item.controller);
-        if (item .isCached){
-
-        }
-        controller[item.function](req, res);
-    } else {
-        errController.error404(req, res);
+var registerRoutes = function(){
+    for (let i = 0; i < global.routes.length; i++) {
+        const item = global.routes[i];
+        let controller = require(setting.controllerFolder + item.controller);
+        let fn = controller[item.function];
+        console.log("resitering : ", item.path);
+        addRoute(item.method, item.path, fn);
     }
 };
+
+let addRoute = function (method, path, handler) {
+    let store = router.register(path);
+    store[method] = handler;
+};
+
+function routePath(req, res){
+    let handler = router.find(req.url);
+    if(handler == undefined){
+        render.renderData(res, 'This URL is not exist!', 'text');
+        return;
+    }
+    let tmp_req = {
+        ...req,
+        params: handler.params
+    };
+    handler.store[req.method.toLowerCase()](tmp_req, res);
+}
+
 module.exports = {
-    guideRequest: RouteGuider
+    routePath,
+    initRouter: (cb) => {
+        core.emitter_definitions();
+        loadRouteFile();
+        core.defineFriendlyDate();
+        core.defineTokenValidation();
+        core.defineEmailValidation();
+        cb && cb();
+    },
 };

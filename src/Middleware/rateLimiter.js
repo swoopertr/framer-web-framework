@@ -1,14 +1,14 @@
-var setting = require('./../Config/setting');
+let setting = require('./../Config/setting');
 
-var RateLimiter = {
+let RateLimiter = {
     data : {},
     ipBlackList : {},
     check : function (ip){
-        var result = false;
-        var now = new Date();
+        let result = false;
+        let now = new Date();
         //check if ip is in blacklist
         if (this.ipBlackList.hasOwnProperty(ip)){
-            var item = this.ipBlackList[ip];
+            let item = this.ipBlackList[ip];
             if ( now - item.blockStart >= setting.DdosLimitOptions.blockSeconds * 1000){
                 delete this.ipBlackList[ip];
                 result = true;
@@ -27,10 +27,10 @@ var RateLimiter = {
             this.data[ip].push({
                 requestTime : now
             });
-            var len = this.data[ip].length;
+            let len = this.data[ip].length;
             //clear the expired requests
-            for (var i = len-1 ; i >= 0 ; i--){
-                var item = this.data[ip][i];
+            for (let i = len-1 ; i >= 0 ; i--){
+                let item = this.data[ip][i];
                 if (now - item.requestTime > setting.DdosLimitOptions.seconds * 1000){
                     this.data[ip].splice(i, 1);
                 }
