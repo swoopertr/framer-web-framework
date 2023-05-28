@@ -4,6 +4,22 @@ let dir = process.cwd();
 let formidable = require('formidable');
 let events = require('events');
 
+let getGoogleAuthUrl = function () {
+    const root  = 'https://accounts.google.com/o/oauth2/v2/auth';
+    const options = {
+        redirect_uri : setting.google.auth_uri,
+        client_id : setting.google.client_id,
+        access_type : 'offline',
+        response_type : "code",
+        prompt : "consent",
+        scope : [
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+          ].join(" "),
+    };
+    return `${rootUrl}?${querystring.stringify(options)}`;
+}
+
 let GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -212,22 +228,41 @@ let postHandler = function (req, res) {
     let routePath = routeName[1].split('?')[0];
     if (routes.hasOwnProperty(routePath)) {
         let item = routes[routePath];
-        if (item.hasOwnProperty('file')) {
+        if (item.hasOwnProperty('file') && item.file) {
+
+            var cookies = core.parseCookies(req);
+            var token = cookies.token;
+            const form = formidable({ uploadDir: setting.downloadFolder }); // upload directory
+
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
+                    res.end(String(err));
+                    return;
+                }
+                req.formData = { fields, files };
+                });
+            form.on('end', () => {
+                console.log('Form upload complete');
+                global.events.emit(token + 'form_posted_end');
+            });
             return;
+        }else{
+            req.on('data', function (data) {
+                if (req.url)
+                    if (!req.formData) {
+                        req.formData = Buffer.from(data); //new Buffer(data, 'utf-8');
+                    }
+            });
+            req.on('end', function () {
+                let body = req.formData.toString('utf-8');
+                body = body.replace(/\+/g, ' ');
+                req.formData = JSON.parse(body);
+                //console.log(req.formData);
+            });
         }
     }
-    req.on('data', function (data) {
-        if (req.url)
-            if (!req.formData) {
-                req.formData = Buffer.from(data); //new Buffer(data, 'utf-8');
-            }
-    });
-    req.on('end', function () {
-        let body = req.formData.toString('utf-8');
-        body = body.replace(/\+/g, ' ');
-        req.formData = JSON.parse(body);
-        //console.log(req.formData);
-    });
+
 };
 
 let getCallerIP = function(req) {
@@ -298,6 +333,9 @@ let redirect = function (res, path) {
 }
 
 let core = {
+    initRouteConfigWatcher,
+    queryStringToObject,
+    getGoogleAuthUrl,
     redirect,
     defineTokenValidation,
     defineFriendlyDate,
@@ -311,7 +349,7 @@ let core = {
     guid: GenerateGUID,
     GenerateToken,
     GeneratePassword,
-    postHandler:postHandler,
+    postHandler,
     getDictionaryFormData,
     getCallerIP,
     request,

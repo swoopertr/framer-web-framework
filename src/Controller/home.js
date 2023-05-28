@@ -15,6 +15,17 @@ var home = {
             };
             render.renderHtml(res, view.views["home"]["main"], data);
         });
+    },
+    main_login : function (req, res) {
+        //get loginurl
+
+        //Getting the user from Google with the code
+
+
+        //Getting the current user
     }
 };
 module.exports = home;
+
+
+

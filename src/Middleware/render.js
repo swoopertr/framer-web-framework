@@ -30,7 +30,8 @@ var render = {
         funcArr.push(
             getHtmlfooter,
             getHtmlheader,
-            getMaster);
+            getMaster,
+            getHtmlPartials);
 
         core.callMethods(funcArr, 0, function () {
             core.getFileNames(dir + setting.allViewFolder, function (listfiles) {
@@ -88,12 +89,18 @@ var preCache = function (content, cb) {
     var master = cache.get("::master");
     var headerData = cache.get("::header");
     var footerData = cache.get("::footer");
+    var regexp = /<%%(.*?)\%%>/gm;
+    const partials = [...content.matchAll(regexp)];
     master = master.replace(new RegExp('<%footer%>', 'g'), footerData ? footerData : '');
     master = master.replace(new RegExp('<%header%>', 'g'), headerData ? headerData : '');
     master = master.replace(new RegExp('<%page.body%>', 'g'), content);
     //this makes putting setting proj values in to the all pages. works like
     for (var prop in setting.proj) {
         master = master.replace(new RegExp('<%proj.' + prop + '%>', 'g'), setting.proj[prop]);
+    }
+    //this section for partial htmls
+    for(let i = 0; i < partials.length; i++){
+        master = master.replace(new RegExp(partials[i][0], 'g'), cache.get("::partials::" + partials[i][1].trim()));     
     }
     cb && cb(master);
 };
@@ -139,6 +146,16 @@ var getHtmlheader = function (cb) {
 var getHtmlfooter = function (cb) {
     core.readFile(dir + setting.viewFolder + 'footer.tht', function (err, content) {
         cache.set("::footer", content);
+        cb && cb();
+    });
+};
+
+var getHtmlPartials = function (cb) {
+    core.getFolderFiles(dir + setting.viewFolder + 'Partials', function (listfiles) {
+        for (var i = 0; i < listfiles.length; i++) {
+            var content = fs.readFileSync(dir + setting.viewFolder + 'Partials/' + listfiles[i] + '.tht', "utf8");
+            cache.set("::partials::" + listfiles[i], content);
+        }
         cb && cb();
     });
 };
