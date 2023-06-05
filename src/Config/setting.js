@@ -28,13 +28,13 @@ settings.errorController = './Controller/error';
 
 settings.google = {
   client_id : "628577188418-pl5i3v54epjirm6t4gj3ukq8g9p1islp.apps.googleusercontent.com",
+  client_secret : "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",
   project_id : "oauther-388108",
   auth_uri : "https://accounts.google.com/o/oauth2/auth",
   token_uri : "https://oauth2.googleapis.com/token",
   auth_provider_x509_cert_url : "https://www.googleapis.com/oauth2/v1/certs",
-  client_secret : "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",
   redirect_uris : [
-      "http://localhost:8081/auth/google"
+    "http://localhost:8081/auth/redirect/google"
   ]
 }
 

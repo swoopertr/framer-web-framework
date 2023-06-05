@@ -15,7 +15,7 @@ if (cluster.isMaster) {
     }
 } else {
     render.init();
-    render.initWatcher();
+    //render.initWatcher();
     router.initRouter(function () {
         http.createServer(function (req, res) {
             core.postHandler(req, res);

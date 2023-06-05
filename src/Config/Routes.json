@@ -12,5 +12,19 @@
     "controller":"home",
     "function":"RickAndMortyPage",
     "isCached":false
+  },
+  {
+    "path" : "/gouth",
+    "method" : "get",
+    "controller" : "home",
+    "function" : "google_auth_login",
+    "isCached" : false
+  },
+  {
+    "path" : "/auth/redirect/google",
+    "method" : "get",
+    "controller" : "home",
+    "function" : "google_auth_redirect",
+    "isCached" : false
   }
 ]

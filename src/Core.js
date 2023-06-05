@@ -4,21 +4,7 @@ let dir = process.cwd();
 let formidable = require('formidable');
 let events = require('events');
 
-let getGoogleAuthUrl = function () {
-    const root  = 'https://accounts.google.com/o/oauth2/v2/auth';
-    const options = {
-        redirect_uri : setting.google.auth_uri,
-        client_id : setting.google.client_id,
-        access_type : 'offline',
-        response_type : "code",
-        prompt : "consent",
-        scope : [
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-          ].join(" "),
-    };
-    return `${rootUrl}?${querystring.stringify(options)}`;
-}
+
 
 let GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -26,6 +12,7 @@ let GenerateGUID = function () {
         return v.toString(16);
     });
 };
+
 let GenerateToken = function () {
     return 'xxxxxxxxxxxx4xxxxxxyyyyxxxxxxxxxxxxyyyyxyxyxyxyxyx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 35 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -146,18 +133,20 @@ let request = {
 
         getReq.end();
     },
-    post: function (baseUri, path, port, headers, body, cb){
+    post: function (baseUri, path, headers, body, cb){
 
-        let http = require("http");
+        let http = require("https");
         let options = {
             "method": "POST",
             "hostname": baseUri,
-            "port": "80",
             "path": path,
             "headers": {
                 "content-type": "application/json",
             }
         };
+        if (headers){
+            options.headers = headers;
+        }
 
         let req = http.request(options, function (res) {
             let result = [];
@@ -167,13 +156,14 @@ let request = {
             });
 
             res.on("end", function () {
-                let result = Buffer.concat(result);
-                console.log(result.toString());
-                cb && cb(result);
+                let result_ = Buffer.concat(result);
+                console.log(result_.toString());
+                cb && cb(JSON.parse(result_.toString()));
             });
         });
 
-        req.write(JSON.stringify(body));
+        req.write(body);
+        
         req.end();
 
     },
@@ -326,16 +316,26 @@ let defineTokenValidation = function () {
         return true;
     }
 };
-
+ 
 let redirect = function (res, path) {
     res.writeHead(302, {Location: path});
     res.end();
 }
 
+var getFolderFiles = function (dir, cb) {
+    var results = [];
+    var files = fs.readdirSync(dir);
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i].replace(/\.[^/.]+$/, "");
+        results.push(file);
+    }
+    cb && cb(results);
+};
+
 let core = {
+    getFolderFiles,
     initRouteConfigWatcher,
     queryStringToObject,
-    getGoogleAuthUrl,
     redirect,
     defineTokenValidation,
     defineFriendlyDate,
