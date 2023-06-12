@@ -14,13 +14,14 @@ let loadRouteFile = function () {
     });
 };
 
-var registerRoutes = function(){
+var registerRoutes = async function(){
     for (let i = 0; i < global.routes.length; i++) {
         const item = global.routes[i];
-        let controller = require(setting.controllerFolder + item.controller);
-        let fn = controller[item.function];
-        console.log("resitering : ", item.path);
+        const controller = require(setting.controllerFolder + item.controller);
+        const fn = controller[item.function];
+        console.log("resgistering : ", item.path);
         addRoute(item.method, item.path, fn);
+        core.sleep(100);
     }
 };
 

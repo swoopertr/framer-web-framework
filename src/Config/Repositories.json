@@ -1,0 +1,12 @@
+[
+    {"repository": "change_kurye"},
+    {"repository": "deliver_df"},
+    {"repository": "deliverNew_Order"},
+    {"repository": "main_delivery"},
+    {"repository": "order_chane"},
+    {"repository": "order_status_change"},
+    {"repository": "restaurant_status_update"},
+    {"repository": "update_kurye_location"},
+    {"repository": "update_kurye_status"},
+    {"repository": "yola_cikti"}
+]

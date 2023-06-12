@@ -3,6 +3,7 @@ let setting = require('./Config/setting');
 let dir = process.cwd();
 let formidable = require('formidable');
 let events = require('events');
+let path = require('path');
 
 
 
@@ -35,6 +36,14 @@ let getFileNames = function (directory, done) {
         }
     }
     done(results);
+};
+
+let getAllFolderFiles = function(folderName){
+    fs.readdirSync(folderName).forEach(File => {
+        const Absolute = path.join(folderName, File);
+        if (fs.statSync(Absolute).isDirectory()) return ThroughDirectory(Absolute);
+        else return Files.push(Absolute);
+    }); 
 };
 
 let readFile = function (file, cb) {
@@ -332,7 +341,12 @@ var getFolderFiles = function (dir, cb) {
     cb && cb(results);
 };
 
+var sleep = function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 let core = {
+    sleep,
     getFolderFiles,
     initRouteConfigWatcher,
     queryStringToObject,

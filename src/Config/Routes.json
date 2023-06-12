@@ -26,5 +26,33 @@
     "controller" : "home",
     "function" : "google_auth_redirect",
     "isCached" : false
+  },
+  {
+    "path": "/list",
+    "method": "get",
+    "controller": "assign",
+    "function": "getlist",
+    "isCached": false
+  },
+  {
+    "path": "/get",
+    "method": "get",
+    "controller": "assign",
+    "function": "getInfo",
+    "isCached": false
+  },
+  {
+    "path": "/gitclone",
+    "method": "get",
+    "controller": "assign",
+    "function": "gitClone",
+    "isCached": false
+  },
+  {
+    "path": "/makezip",
+    "method": "get",
+    "controller": "assign",
+    "function": "makeZip",
+    "isCached": false
   }
 ]
