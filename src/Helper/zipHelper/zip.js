@@ -5,8 +5,8 @@ const jszip = require("jszip");
 
 let work = {
     getAllFiles : function(dirPath, arrayOfFiles) {
-        files = fs.readdirSync(dirPath)
-        arrayOfFiles = arrayOfFiles || []
+        files = fs.readdirSync(dirPath);
+        arrayOfFiles = arrayOfFiles || [];
         
         files.forEach(function(file) {
             if(file.startsWith(".")) return;
@@ -18,9 +18,8 @@ let work = {
 
                 arrayOfFiles.push({fileName: fullPath.replace(dir,''), fullPath});
             }
-        })
-      
-        return arrayOfFiles
+        });
+        return arrayOfFiles;
     },
     makeZip : async function (dirPath, zipName) {
         let zip = new jszip();

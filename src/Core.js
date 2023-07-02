@@ -5,8 +5,6 @@ let formidable = require('formidable');
 let events = require('events');
 let path = require('path');
 
-
-
 let GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -25,7 +23,7 @@ let GeneratePassword = function () {
     return Math.random().toString(36).slice(-8);
 };
 
-let getFileNames = function (directory, done) {
+let getFileNames = function (directory, cb) {
     let results = [];
     let dirs = fs.readdirSync(directory);
     for (let i = 0; i < dirs.length; i++) {
@@ -35,7 +33,7 @@ let getFileNames = function (directory, done) {
             results.push(obj);
         }
     }
-    done(results);
+    cb && cb(results);
 };
 
 let getAllFolderFiles = function(folderName){
@@ -366,9 +364,9 @@ let core = {
     postHandler,
     getDictionaryFormData,
     getCallerIP,
-    request,
     checkVirtual,
     getExtention,
-    getActionName
+    getActionName,
+    request
 };
 module.exports = core;

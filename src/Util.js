@@ -1,12 +1,11 @@
 let setting = require('./Config/setting');
 let core = require('./Core');
 let qs = require('qs');
+const url = "https://oauth2.googleapis.com/token";
 
 let work = {
     google:{
-        getOauthTokens: (code,cb) => {
-            const url = "https://oauth2.googleapis.com/token";
-            
+        getOauthTokens: (code, cb) => {
             const values = {
                 code,
                 client_id : setting.google.client_id,

@@ -42,8 +42,6 @@ let home = {
         } catch (error) {
             render.renderData(res, error);
         }
-        
-        
         return;
     }
 };
