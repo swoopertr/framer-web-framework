@@ -103,6 +103,7 @@ var preCache = function (content, cb) {
         master = master.replace(new RegExp(partials[i][0], 'g'), cache.get("::partials::" + partials[i][1].trim()));     
     }
     cb && cb(master);
+    //todo...
 };
 
 var dataRender = function (html, data, cb) {
