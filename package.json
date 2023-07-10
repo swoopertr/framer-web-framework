@@ -23,7 +23,8 @@
     "aws-sdk": "^2.326.0",
     "formidable": "^2.0.1",
     "jszip": "^3.10.1",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "jsonwebtoken": "^9.0.0"
   },
   "bugs": {
     "url": "https://github.com/swoopertr/framer-web-framework/issues"

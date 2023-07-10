@@ -1,11 +1,17 @@
 let setting = require('./Config/setting');
 let core = require('./Core');
 let qs = require('qs');
-const url = "https://oauth2.googleapis.com/token";
+let jwt = require("jsonwebtoken");
 
 let work = {
+    jwt:{
+        decode : (token) =>{
+            return jwt.decode(token);
+        }
+    },
     google:{
         getOauthTokens: (code, cb) => {
+            //const url = "https://oauth2.googleapis.com/token";
             const values = {
                 code,
                 client_id : setting.google.client_id,
@@ -41,8 +47,22 @@ let work = {
             };
             const qs = new URLSearchParams(options);
             return `${rootUrl}?${qs.toString()}`;
+        },
+        getGoogleUser: (id_token, access_token, cb)=>{
+            //let url = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`;
+            try {
+                let header = {"Authorization": `Bearer ${id_token}`};
+                core.request.get("www.googleapis.com", `/oauth2/v1/userinfo?alt=json&access_token=${access_token}`, header, (res)=>{
+                    cb && cb(res);
+                });
+            } catch (error) {
+                console.log("Error fetching google user :", error );
+                cb && cb(error);
+            }
+            return;
         }
     }
+
 };
 
 module.exports = work;

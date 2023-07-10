@@ -37,7 +37,13 @@ let home = {
         const code = obj.code; 
         try {
             util.google.getOauthTokens(code, (result)=>{
-                render.renderData(res, result);
+                console.info(result);
+                let pay_load = util.jwt.decode(result.id_token);
+                console.log("google_user in jwt: ", pay_load);
+                util.google.getGoogleUser(result.id_token, result.access_token, (ret_val)=>{
+                    console.log("google_user with google api: ", pay_load);
+                    render.renderData(res, ret_val);
+                });
             });    
         } catch (error) {
             render.renderData(res, error);
