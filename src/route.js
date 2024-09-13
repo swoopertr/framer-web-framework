@@ -21,7 +21,7 @@ var registerRoutes = async function(){
         const fn = controller[item.function];
         console.log("resgistering : ", item.path);
         addRoute(item.method, item.path, fn);
-        core.sleep(100);
+        await core.sleep(100);
     }
 };
 
