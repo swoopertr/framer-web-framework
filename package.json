@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "debug": "node test.js"
+    "debug": "node test.js",
+    "build_image": "sudo docker build --pull --rm -f \"dockerfile\" -t web:latest \".\"",
+    "run_image" : "sudo docker run -d -p 8081:8081 web:latest"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,10 @@
   "license": "ISC",
   "dependencies": {
     "@medley/router": "^0.2.1",
-    "formidable": "^3.5.1",
+    "formidable": "3.5.2",
     "jszip": "^3.10.1",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "qs": "6.13.0"
   },
   "bugs": {
     "url": "https://github.com/swoopertr/framer-web-framework/issues"

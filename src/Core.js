@@ -272,7 +272,6 @@ let getCallerIP = function(req) {
 
 let defineEmailValidation = function () {
     String.prototype.validateEmail = function () {
-        //let mailformat = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(this).toLowerCase());
     }
@@ -283,12 +282,12 @@ let emitter_definitions = function(){
     global.events = emitter;
 };
 
-let checkVirtual = function(_url, cb) {
-    cb && cb(_url.indexOf(setting.virtualRootPath) != -1);
+let checkVirtual = function(_url, ) {
+    return setting.virtualRootPath != -1;
 };
 
 let getExtention = function (_url) {
-    return _url.match(/\.[0-9a-z]+$/i)[0];
+    return _url.match(/\.[0-9a-z]+$/i);
 }
 
 var formatDate = function(date){
