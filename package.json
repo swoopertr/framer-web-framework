@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "debug": "node test.js",
-    "build_image": "sudo docker build --pull --rm -f \"dockerfile\" -t web:latest \".\"",
-    "run_image" : "sudo docker run -d -p 8081:8081 web:latest"
+    "build_image": "docker build --pull --rm -f \"dockerfile\" -t web:latest \".\"",
+    "run_image" : "docker run -d -p 8081:8081 web:latest"
   },
   "repository": {
     "type": "git",

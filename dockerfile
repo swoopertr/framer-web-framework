@@ -1,4 +1,4 @@
-from node:23-alpine3.20 as BASE
+from node:23-alpine3.20
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
