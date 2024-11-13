@@ -7,7 +7,7 @@
     "start": "node index.js",
     "debug": "node test.js",
     "build_image": "docker build --pull --rm -f \"dockerfile\" -t web:latest \".\"",
-    "run_image" : "docker run -d -p 8081:8081 web:latest"
+    "run_image": "docker run -d -p 8081:8081 web:latest"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,9 @@
   "dependencies": {
     "@medley/router": "^0.2.1",
     "formidable": "3.5.2",
-    "jszip": "^3.10.1",
+    "graphql": "^16.9.0",
     "jsonwebtoken": "^9.0.2",
+    "jszip": "^3.10.1",
     "qs": "6.13.0"
   },
   "bugs": {
