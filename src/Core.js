@@ -7,14 +7,16 @@ let path = require('path');
 
 let GenerateGUID = function () {
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        let r = (Math.random() * 16) | 0,
+            v = c == 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
 };
 
 let GenerateToken = function () {
     return 'xxxxxxxxxxxx4xxxxxxyyyyxxxxxxxxxxxxyyyyxyxyxyxyxyx'.replace(/[xy]/g, function (c) {
-        let r = Math.random() * 35 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        let r = (Math.random() * 35) | 0,
+            v = c == 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(35);
     });
 };
@@ -29,19 +31,19 @@ let getFileNames = function (directory, cb) {
     for (let i = 0; i < dirs.length; i++) {
         let files = fs.readdirSync(directory + dirs[i]);
         for (let j = 0; j < files.length; j++) {
-            let obj = {controller: dirs[i], view: files[j].replace(/\.[^/.]+$/, "")};
+            let obj = { controller: dirs[i], view: files[j].replace(/\.[^/.]+$/, '') };
             results.push(obj);
         }
     }
     cb && cb(results);
 };
 
-let getAllFolderFiles = function(folderName){
+let getAllFolderFiles = function (folderName) {
     fs.readdirSync(folderName).forEach(File => {
         const Absolute = path.join(folderName, File);
         if (fs.statSync(Absolute).isDirectory()) return ThroughDirectory(Absolute);
         else return Files.push(Absolute);
-    }); 
+    });
 };
 
 let readFile = function (file, cb) {
@@ -105,64 +107,63 @@ let callMethods = function (methods, i, cb) {
 };
 
 let queryStringToObject = function (search) {
-    return  JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
-        return key === "" ? value : decodeURIComponent(value)
+    return JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+        return key === '' ? value : decodeURIComponent(value);
     });
 };
 
 let request = {
-    get: function (baseUri, path, headers, cb){
-        let http = require("https");
+    get: function (baseUri, path, headers, cb) {
+        let http = require('https');
 
         let options = {
-            "method": "GET",
-            "hostname": baseUri,
-            "port": null,
-            "path": path
+            method: 'GET',
+            hostname: baseUri,
+            port: null,
+            path: path,
         };
-        if (headers){
+        if (headers) {
             options.headers = headers;
         }
 
         let getReq = http.request(options, function (res) {
             let chunks = [];
 
-            res.on("data", function (chunk) {
+            res.on('data', function (chunk) {
                 chunks.push(chunk);
             });
 
-            res.on("end", function () {
+            res.on('end', function () {
                 let body = Buffer.concat(chunks);
-                let result =JSON.parse(body.toString());
+                let result = JSON.parse(body.toString());
                 cb && cb(result);
             });
         });
 
         getReq.end();
     },
-    post: function (baseUri, path, headers, body, cb){
-
-        let http = require("https");
+    post: function (baseUri, path, headers, body, cb) {
+        let http = require('https');
         let options = {
-            "method": "POST",
-            "hostname": baseUri,
-            "path": path,
-            "headers": {
-                "content-type": "application/json",
-            }
+            method: 'POST',
+            hostname: baseUri,
+            path: path,
+            headers: {
+                'content-type': 'application/json',
+            },
         };
-        if (headers){
+        if (headers) {
             options.headers = headers;
         }
 
         let req = http.request(options, function (res) {
             let result = [];
 
-            res.on("data", function (chunk) {
+            res.on('data', function (chunk) {
                 result.push(chunk);
             });
 
-            res.on("end", function () {
+            res.on('end', function () {
                 let result_ = Buffer.concat(result);
                 console.log(result_.toString());
                 cb && cb(JSON.parse(result_.toString()));
@@ -170,24 +171,23 @@ let request = {
         });
 
         req.write(body);
-        
-        req.end();
 
+        req.end();
     },
-    getAsync: function (baseUri, path, headers){
-        return new Promise((resolve, reject) =>{
-            request.get(baseUri,path, headers, function (result){
+    getAsync: function (baseUri, path, headers) {
+        return new Promise((resolve, reject) => {
+            request.get(baseUri, path, headers, function (result) {
                 resolve(result);
             });
         });
     },
-    postAsync: function (baseUri, path, port, headers, body){
+    postAsync: function (baseUri, path, port, headers, body) {
         return new Promise(resolve => {
             request.post(baseUri, path, port, headers, body, function (result) {
                 resolve(result);
             });
         });
-    }
+    },
 };
 
 let getDictionaryFormData = function (formData, fields, cb) {
@@ -206,19 +206,19 @@ let getDictionaryFormData = function (formData, fields, cb) {
 };
 
 let getActionName = function (actionId) {
-    let result = "";
+    let result = '';
     if (actionId == 1) {
-        result = "Insert";
-    } else if(actionId == 2){
-        result = "Update";
-    } else if(actionId == 3){
-        result = "Delete";
+        result = 'Insert';
+    } else if (actionId == 2) {
+        result = 'Update';
+    } else if (actionId == 3) {
+        result = 'Delete';
     }
     return result;
 };
 
 let postHandler = function (req, res) {
-    if (req.method !== "POST") {
+    if (req.method !== 'POST') {
         return;
     }
     let routeName = req.url.split('/');
@@ -226,7 +226,6 @@ let postHandler = function (req, res) {
     if (routes.hasOwnProperty(routePath)) {
         let item = routes[routePath];
         if (item.hasOwnProperty('file') && item.file) {
-
             var cookies = core.parseCookies(req);
             var token = cookies.token;
             const form = formidable({ uploadDir: setting.downloadFolder }); // upload directory
@@ -238,13 +237,13 @@ let postHandler = function (req, res) {
                     return;
                 }
                 req.formData = { fields, files };
-                });
+            });
             form.on('end', () => {
                 console.log('Form upload complete');
                 global.events.emit(token + 'form_posted_end');
             });
             return;
-        }else{
+        } else {
             req.on('data', function (data) {
                 if (req.url)
                     if (!req.formData) {
@@ -259,80 +258,76 @@ let postHandler = function (req, res) {
             });
         }
     }
-
 };
 
-let getCallerIP = function(req) {
-    let ip = req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+let getCallerIP = function (req) {
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     return ip;
-}
+};
 
 let defineEmailValidation = function () {
     String.prototype.validateEmail = function () {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(this).toLowerCase());
-    }
-}
+    };
+};
 
-let emitter_definitions = function(){
+let emitter_definitions = function () {
     let emitter = new events.EventEmitter();
     global.events = emitter;
 };
 
-let checkVirtual = function(_url, ) {
+let checkVirtual = function (_url) {
     return setting.virtualRootPath != -1;
 };
 
 let getExtention = function (_url) {
     return _url.match(/\.[0-9a-z]+$/i);
-}
+};
 
-var formatDate = function(date){
+var formatDate = function (date) {
     let d = new Date(date);
-    let dformat = `${(d.getMonth()+1).toString().padStart(2,"0")}-${d.getDate().toString().padStart(2,"0")}-${d.getFullYear().toString().padStart(2,"0")} ${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}:${d.getSeconds().toString().padStart(2,"0")}`;
-    let dDate = `${(d.getMonth()+1).toString().padStart(2,"0")}-${d.getDate().toString().padStart(2,"0")}-${d.getFullYear().toString().padStart(2,"0")}`;
-    let dTime =`${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}:${d.getSeconds().toString().padStart(2,"0")}`;
+    let dformat = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}-${d.getFullYear().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
+    let dDate = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}-${d.getFullYear().toString().padStart(2, '0')}`;
+    let dTime = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
     /*if(dformat == 'NaN-NaN-NaN NaN:NaN:NaN'){ // date format is mm-dd-yyyy hh:MM:ss
       return date;
     }*/
     let result = {
         full: dformat,
-        date : dDate,
-        time : dTime
+        date: dDate,
+        time: dTime,
     };
     return result;
-}
+};
 
 let defineFriendlyDate = function () {
     Date.prototype.friendlyDate = function () {
         return formatDate(this);
-    }
+    };
 };
 
 let defineTokenValidation = function () {
-    String.prototype.validateToken = function (){
-        if (this === undefined){
+    String.prototype.validateToken = function () {
+        if (this === undefined) {
             return false;
-        }else if(this.length < 50 || this.length >50){
+        } else if (this.length < 50 || this.length > 50) {
             return false;
         }
         return true;
-    }
+    };
 };
- 
+
 let redirect = function (res, path) {
-    res.writeHead(302, {Location: path});
+    res.writeHead(302, { Location: path });
     res.end();
-}
+};
 
 var getFolderFiles = function (dir, cb) {
     var results = [];
     var files = fs.readdirSync(dir);
     for (var i = 0; i < files.length; i++) {
-        var file = files[i].replace(/\.[^/.]+$/, "");
+        var file = files[i].replace(/\.[^/.]+$/, '');
         results.push(file);
     }
     cb && cb(results);
@@ -340,7 +335,7 @@ var getFolderFiles = function (dir, cb) {
 
 var sleep = function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 
 let core = {
     sleep,
@@ -366,6 +361,6 @@ let core = {
     checkVirtual,
     getExtention,
     getActionName,
-    request
+    request,
 };
 module.exports = core;

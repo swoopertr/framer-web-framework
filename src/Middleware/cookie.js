@@ -14,8 +14,8 @@ var list = function (req, res) {
     if (fullList) {
         var cookieArray = fullList.split(';');
         for (var i = 0; i < cookieArray.length; i++) {
-            var parts = cookieArray[i].split("=");
-            if (cookieArray[i] === "") {
+            var parts = cookieArray[i].split('=');
+            if (cookieArray[i] === '') {
                 continue;
             }
             cookieObj[parts[0].trim()] = decodeURI(parts[1].trim());
@@ -30,7 +30,7 @@ var get = function (req, res, key) {
     if (fullList) {
         var cookieArray = fullList.split(';');
         for (var i = 0; i < cookieArray.length; i++) {
-            var parts = cookieArray[i].split("=");
+            var parts = cookieArray[i].split('=');
             if (key === parts[0].trim()) {
                 result = decodeURI(parts[1].trim());
                 break;
@@ -43,12 +43,11 @@ var get = function (req, res, key) {
 var set = function (req, res, key, value, cb) {
     var cookieObj = list(req, res);
     cookieObj[key] = value;
-    header.addHeader(res, {key: 'Set-Cookie', value: toStringify(cookieObj)}, function (resm) {
+    header.addHeader(res, { key: 'Set-Cookie', value: toStringify(cookieObj) }, function (resm) {
         var cookieText = toStringify(cookieObj);
         req.headers.cookie = cookieText;
 
         cb && cb(req, resm);
-
     });
 };
 
@@ -66,7 +65,7 @@ var cookie = {
     getCookieList: list,
     getCookie: get,
     setCookie: set,
-    removeCookie: remove
+    removeCookie: remove,
 };
 
 module.exports = cookie;

@@ -1,18 +1,18 @@
 [
-  {
-    "path": "/home",
-    "method": "get",
-    "controller": "home",
-    "function": "main",
-    "isCached": false,
-    "security":{}
-  },
-  {
-    "path":"/RickAndMorty/list",
-    "method":"get",
-    "controller":"home",
-    "function":"RickAndMortyPage",
-    "isCached":false,
-    "security":{}
-  }
+    {
+        "path": "/home",
+        "method": "get",
+        "controller": "home",
+        "function": "main",
+        "isCached": false,
+        "security": {}
+    },
+    {
+        "path": "/RickAndMorty/list",
+        "method": "get",
+        "controller": "home",
+        "function": "RickAndMortyPage",
+        "isCached": false,
+        "security": {}
+    }
 ]
