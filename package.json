@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "framer",
   "version": "1.1.0",
@@ -33,3 +34,44 @@
   },
   "homepage": "https://github.com/swoopertr/framer-web-framework#readme"
 }
+=======
+{
+  "name": "framer",
+  "version": "1.1.0",
+  "description": "simpliest and no deps web framework ever.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "debug": "node test.js",
+    "build_image": "docker build --pull --rm -f \"dockerfile\" -t web:latest \".\"",
+    "run_image": "docker run -d -p 8081:8081 web:latest",
+    "format" : "npx prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swoopertr/framer-web-framework.git"
+  },
+  "keywords": [
+    "simple",
+    "no",
+    "deps"
+  ],
+  "author": "tunc kiral",
+  "license": "ISC",
+  "dependencies": {
+    "@medley/router": "^0.2.1",
+    "formidable": "3.5.2",
+    "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "jszip": "^3.10.1",
+    "qs": "6.13.0"
+  },
+  "bugs": {
+    "url": "https://github.com/swoopertr/framer-web-framework/issues"
+  },
+  "homepage": "https://github.com/swoopertr/framer-web-framework#readme",
+  "devDependencies": {
+    "prettier": "3.3.3"
+  }
+}
+>>>>>>> 22a558768a9031c62bcb5519a1aa9269e68f871e

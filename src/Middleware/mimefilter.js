@@ -15,7 +15,6 @@ function setHeaderAndServeImg(res, headerType, filePath) {
 }
 
 let mimeRequest = {
-
     catchMime: function (req, res) {
         if (req.url === '/favicon.ico') {
             res.writeHead(200, { 'Content-Type': 'image/x-icon' });
@@ -24,7 +23,6 @@ let mimeRequest = {
         }
 
         if (!core.checkVirtual(req.url)) {
-
             var filePath = req.url.replace(setting.virtualRootPath, setting.rootPath);
             var ext = core.getExtention(req.url);
 
@@ -63,9 +61,7 @@ let mimeRequest = {
             }*/
             route.routePath(req, res);
         }
-
-    }
-
+    },
 };
 
 module.exports = mimeRequest;
