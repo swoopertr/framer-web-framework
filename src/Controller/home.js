@@ -10,6 +10,7 @@ const { readSync } = require('fs');
 
 let home = {
     main: function (req, res) {
+        console.log('page viewed');
         render.renderData(res, {data: 'hello'}, 'json');
     },
     RickAndMortyPage: function (req, res) {
@@ -17,6 +18,7 @@ let home = {
             let data = {
                 data: result
             };
+            
             render.renderHtml(res, view.views["home"]["main"], data);
         });
     },

@@ -19,7 +19,7 @@ var registerRoutes = async function(){
         const item = global.routes[i];
         const controller = require(setting.controllerFolder + item.controller);
         const fn = controller[item.function];
-        console.log("resgistering : ", item.path);
+        console.log("registering : ", item.path);
         addRoute(item.method, item.path, fn);
         await core.sleep(100);
     }
