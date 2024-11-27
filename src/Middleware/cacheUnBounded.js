@@ -3,10 +3,8 @@
 var cluster = require('cluster');
 
 var logger = {
-    log: function () {
-    },
-    warn: function () {
-    }
+    log: function () {},
+    warn: function () {},
 };
 
 var messagesCounter = 0;
@@ -25,18 +23,19 @@ var purgeIntervalObj;
 var cache = {};
 
 var masterMessagesHandlerMap = {
-    'read': _readCacheValue,
-    'store': _storeCacheValue,
-    'remove': _removeCacheValue,
-    'clean': _cleanCache,
-    'size': _getCacheSize,
-    'keys': _getCacheKeys,
-    'unknown': function (msg) {
+    read: _readCacheValue,
+    store: _storeCacheValue,
+    remove: _removeCacheValue,
+    clean: _cleanCache,
+    size: _getCacheSize,
+    keys: _getCacheKeys,
+    unknown: function (msg) {
         logger.warn('Received an invalid message type:', msg.type);
-    }
+    },
 };
 
-function CacheEntry(data) { // ttl -> milliseconds
+function CacheEntry(data) {
+    // ttl -> milliseconds
     this.key = data.key;
     this.value = data.value;
     this.creationTime = Date.now();
@@ -51,7 +50,7 @@ CacheEntry.prototype.isExpired = function () {
 };
 
 CacheEntry.prototype.toString = function () {
-    return "Key: " + this.key + "; Value: " + this.value + "; Ttl: " + this.ttl;
+    return 'Key: ' + this.key + '; Value: ' + this.value + '; Ttl: ' + this.ttl;
 };
 
 function _findWorkerByPid(workerPid) {
@@ -106,7 +105,7 @@ function _readCacheValue(message) {
 
     if (cacheEntry) {
         message.responseParams = {
-            value: cacheEntry.value
+            value: cacheEntry.value,
         };
         if (cacheEntry.expirationTime) {
             message.responseParams.expirationTime = cacheEntry.expirationTime;
@@ -119,7 +118,7 @@ function _storeCacheValue(message) {
     cache[message.requestParams.key] = new CacheEntry(message.requestParams);
     if (message.requestParams.ttl) {
         message.responseParams = {
-            expirationTime: cache[message.requestParams.key].expirationTime
+            expirationTime: cache[message.requestParams.key].expirationTime,
         };
     }
     _sendMessageToWorker(message);
@@ -137,14 +136,14 @@ function _cleanCache(message) {
 
 function _getCacheSize(message) {
     message.responseParams = {
-        size: Object.keys(cache).length
+        size: Object.keys(cache).length,
     };
     _sendMessageToWorker(message);
 }
 
 function _getCacheKeys(message) {
     message.responseParams = {
-        keys: Object.keys(cache)
+        keys: Object.keys(cache),
     };
     _sendMessageToWorker(message);
 }
@@ -159,7 +158,6 @@ function _purgeCache() {
 }
 
 function _masterIncomingMessagesHandler(message) {
-
     logger.log('Master received message:', message);
 
     if (!message || message.channel !== 'memored') return false;
@@ -177,11 +175,9 @@ function _workerIncomingMessagesHandler(message) {
         pendingMessage.callback.apply(null, _getResultParamsValues(message.responseParams));
         delete activeMessages[message.id];
     }
-
 }
 
 if (cluster.isMaster) {
-
     Object.keys(cluster.workers).forEach(function (workerId) {
         cluster.workers[workerId].on('message', _masterIncomingMessagesHandler);
     });
@@ -190,7 +186,6 @@ if (cluster.isMaster) {
     cluster.on('fork', function (worker) {
         worker.on('message', _masterIncomingMessagesHandler);
     });
-
 } else {
     process.on('message', _workerIncomingMessagesHandler);
 }
@@ -218,9 +213,9 @@ function _read(key, callback) {
         _sendMessageToMaster({
             type: 'read',
             requestParams: {
-                key: key
+                key: key,
             },
-            callback: callback
+            callback: callback,
         });
     } else {
         logger.warn('Memored::read# Cannot call this function from master process');
@@ -235,7 +230,7 @@ function _multiRead(keys, callback) {
         if (value) {
             results[keys[counter]] = {
                 value: value,
-                expirationTime: expirationTime
+                expirationTime: expirationTime,
             };
         }
 
@@ -269,9 +264,9 @@ function _store(key, value, ttl, callback) {
             requestParams: {
                 key: key,
                 value: value,
-                ttl: ttl
+                ttl: ttl,
             },
-            callback: callback
+            callback: callback,
         });
     } else {
         logger.warn('Memored::store# Cannot call this function from master process');
@@ -310,9 +305,9 @@ function _remove(key, callback) {
         _sendMessageToMaster({
             type: 'remove',
             requestParams: {
-                key: key
+                key: key,
             },
-            callback: callback
+            callback: callback,
         });
     } else {
         logger.warn('Memored::remove# Cannot call this function from master process');
@@ -336,7 +331,6 @@ function _multiRemove(keys, callback) {
         keys.forEach(function (key) {
             _remove(key, _multiRemoveCallback);
         });
-
     } else {
         logger.warn('Memored::remove# Cannot call this function from master process');
     }
@@ -346,7 +340,7 @@ function _clean(callback) {
     if (cluster.isWorker) {
         _sendMessageToMaster({
             type: 'clean',
-            callback: callback
+            callback: callback,
         });
     } else {
         logger.warn('Memored::clean# Cannot call this function from master process');
@@ -357,11 +351,11 @@ function _size(callback) {
     if (cluster.isWorker) {
         _sendMessageToMaster({
             type: 'size',
-            callback: callback
+            callback: callback,
         });
     } else {
         setImmediate(callback, null, {
-            size: Object.keys(cache).length
+            size: Object.keys(cache).length,
         });
     }
 }
@@ -379,11 +373,11 @@ function _keys(callback) {
     if (cluster.isWorker) {
         _sendMessageToMaster({
             type: 'keys',
-            callback: callback
+            callback: callback,
         });
     } else {
         setImmediate(callback, {
-            keys: Object.keys(cache)
+            keys: Object.keys(cache),
         });
     }
 }
@@ -400,5 +394,5 @@ module.exports = {
     clean: _clean,
     size: _size,
     reset: _reset,
-    keys: _keys
+    keys: _keys,
 };

@@ -3,23 +3,20 @@ var person = {
         var list = [
             {
                 id: 1,
-                name: "Newton"
+                name: 'Newton',
             },
             {
                 id: 2,
-                name: "Balzak"
+                name: 'Balzak',
             },
             {
                 id: 3,
-                name: "Tolstoy"
-            }
+                name: 'Tolstoy',
+            },
         ];
         cb && cb(list);
     },
-    create: function (cb) {
-
-    }
+    create: function (cb) {},
 };
-
 
 module.exports = person;

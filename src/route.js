@@ -7,14 +7,14 @@ let core = require('./Core');
 let router = new Router();
 
 let loadRouteFile = function () {
-    fs.readFile(dir + setting.jsonPath, 'utf-8',async function (err, content) {
+    fs.readFile(dir + setting.jsonPath, 'utf-8', async function (err, content) {
         let routes = JSON.parse(content);
         global.routes = routes;
         await registerRoutes();
     });
 };
 
-var registerRoutes = async function(){
+var registerRoutes = async function () {
     for (let i = 0; i < global.routes.length; i++) {
         const item = global.routes[i];
         const controller = require(setting.controllerFolder + item.controller);
@@ -30,22 +30,22 @@ let addRoute = function (method, path, handler) {
     store[method] = handler;
 };
 
-function routePath(req, res){
+function routePath(req, res) {
     let handler = router.find(req.url);
-    if(handler == undefined){
+    if (handler == undefined) {
         render.renderData(res, 'This URL is not exist!', 'text');
         return;
     }
     let tmp_req = {
         ...req,
-        params: handler.params
+        params: handler.params,
     };
     handler.store[req.method.toLowerCase()](tmp_req, res);
 }
 
 module.exports = {
     routePath,
-    initRouter: (cb) => {
+    initRouter: cb => {
         core.emitter_definitions();
         loadRouteFile();
         core.defineFriendlyDate();
