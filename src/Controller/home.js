@@ -6,11 +6,10 @@ let view = require('./../Middleware/ViewPack');
 let ramApi = require('./../Data/External/RickAndMorty');
 let url = require('url');
 let util = require('./../Util');
-const { readSync } = require('fs');
 
 let home = {
     main: function (req, res) {
-        console.log('page viewed');
+        //console.log('page viewed');
         render.renderData(res, {data: 'hello'}, 'json');
     },
     RickAndMortyPage: function (req, res) {
