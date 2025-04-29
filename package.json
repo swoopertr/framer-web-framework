@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@medley/router": "^0.2.1",
-    "formidable": "3.5.2",
+    "formidable": "3.5.4",
     "graphql": "^16.9.0",
     "jsonwebtoken": "^9.0.2",
     "jszip": "^3.10.1",
