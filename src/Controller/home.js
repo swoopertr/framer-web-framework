@@ -6,11 +6,25 @@ let view = require('./../Middleware/ViewPack');
 let ramApi = require('./../Data/External/RickAndMorty');
 let url = require('url');
 let util = require('./../Util');
+const { runTerminalCommand } = require('../Helper/Command');
 
 let home = {
     main: function (req, res) {
         //console.log('page viewed');
-        render.renderData(res, {data: 'hello'}, 'json');
+        runTerminalCommand('node -v', function (result) {
+            render.renderData(res, {data: result}, 'json');
+        });
+        
+    },
+    fileUpload : function (req, res) {
+         
+        //req.on('end',async function () {
+            let formData = req.formData;
+            console.log(formData);
+            render.renderData(res, {data: formData}, 'json');
+       // });
+        
+        
     },
     RickAndMortyPage: function (req, res) {
         ramApi.getNames(function (result) {

@@ -25,7 +25,7 @@ settings.jsonPath = '/src/Config/Routes.json';
 settings.ServerPort = process.env.PORT || 8081;
 
 settings.errorController = './Controller/error';
-
+settings.downloadFolder = 'Presentation/Download/';
 settings.google = {
     client_id: '628577188418-pl5i3v54epjirm6t4gj3ukq8g9p1islp.apps.googleusercontent.com',
     client_secret: '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',

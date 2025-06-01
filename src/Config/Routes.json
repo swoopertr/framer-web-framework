@@ -14,5 +14,13 @@
         "function": "RickAndMortyPage",
         "isCached": false,
         "security": {}
+    },
+    {
+        "path": "/file",
+        "method": "post",
+        "controller": "home",
+        "function": "fileUpload",
+        "isCached": false,
+        "security": {}
     }
 ]

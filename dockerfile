@@ -1,18 +1,12 @@
-from node:23-alpine3.20
-# Set the working directory inside the container
+FROM node:23-alpine3.20
+
 WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json files
 COPY package*.json ./
 
-# Install the dependencies
-RUN npm install
+RUN bun install
 
-# Copy the rest of the code
 COPY . .
 
-# Expose the port that the app listens on
-EXPOSE 8081
-
-# Define the command to run the app
-CMD ["node", "index.js"]
+EXPOSE 8080
+CMD ["bun", "index.js"]

@@ -221,9 +221,9 @@ let postHandler = function (req, res) {
     if (req.method !== 'POST') {
         return;
     }
-    let routeName = req.url.split('/');
-    let routePath = routeName[1].split('?')[0];
-    if (routes.hasOwnProperty(routePath)) {
+    let routePath = req.url.split('?')[0];
+    if (global.routes.hasOwnProperty(routePath)) {
+
         let item = routes[routePath];
         if (item.hasOwnProperty('file') && item.file) {
             var cookies = core.parseCookies(req);
