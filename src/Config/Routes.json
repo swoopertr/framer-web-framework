@@ -5,7 +5,7 @@
         "controller": "home",
         "function": "main",
         "isCached": false,
-        "security": {}
+        "security": false
     },
     {
         "path": "/RickAndMorty/list",
@@ -13,7 +13,7 @@
         "controller": "home",
         "function": "RickAndMortyPage",
         "isCached": false,
-        "security": {}
+        "security": false
     },
     {
         "path": "/file",

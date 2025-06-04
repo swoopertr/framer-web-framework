@@ -22,7 +22,7 @@ settings.virtualRootPath = '/virt/';
 
 settings.controllerFolder = './Controller/';
 settings.jsonPath = '/src/Config/Routes.json';
-settings.ServerPort = process.env.PORT || 8081;
+settings.ServerPort = process.env.PORT || 8080;
 
 settings.errorController = './Controller/error';
 settings.downloadFolder = 'Presentation/Download/';

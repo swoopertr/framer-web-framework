@@ -219,7 +219,7 @@ let getActionName = function (actionId) {
 
 let postHandler = async function (req, res, cb) {
     if (req.method !== 'POST') {
-        return;
+        return {req, res};
     }
     let routePath = req.url.split('?')[0];
     if (global.routes.hasOwnProperty(routePath)) {
@@ -230,7 +230,7 @@ let postHandler = async function (req, res, cb) {
             let token = cookies.token;
 
             const form = formidable.formidable({ 
-                uploadDir: __dirname + '/../Presentation/Download',
+                uploadDir: __dirname + '/../'+ setting.downloadFolder,
                 filename: (name, ext, path, form) => {
                     return Date.now() + '_' + path.originalFilename;
                 }
@@ -239,8 +239,9 @@ let postHandler = async function (req, res, cb) {
             let files;
             try {
                 [fields, files] = await form.parse(req);
-                req.formData = [fields, files];
-                console.log(files);
+
+                req.formData = {...fields, ...files};
+                
             } catch (err) {
                 
                 console.error(err);
@@ -260,11 +261,10 @@ let postHandler = async function (req, res, cb) {
                 let body = req.formData.toString('utf-8');
                 body = body.replace(/\+/g, ' ');
                 req.formData = JSON.parse(body);
-                //console.log(req.formData);
             });
         }
     }
-    return [req, res];
+    return {req, res};
 };
 
 let getCallerIP = function (req) {

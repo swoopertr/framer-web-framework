@@ -6,7 +6,7 @@ let view = require('./../Middleware/ViewPack');
 let ramApi = require('./../Data/External/RickAndMorty');
 let url = require('url');
 let util = require('./../Util');
-const { runTerminalCommand } = require('../Helper/Command');
+const { runTerminalCommand } = require('../Helper/command');
 
 let home = {
     main: function (req, res) {

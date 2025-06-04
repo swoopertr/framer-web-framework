@@ -20,8 +20,8 @@ if (cluster.isMaster) {
   router.initRouter(function () {
     http
       .createServer(async function (req, res) {
-        let [reqp, resp] = await core.postHandler(req, res);
-        mimeCore.catchMime(reqp, resp);  
+        let handler = await core.postHandler(req, res);
+        mimeCore.catchMime(handler.req,handler.res);
       })
       .listen(setting.ServerPort);
     console.log("browse ==> http://localhost:" + setting.ServerPort);
