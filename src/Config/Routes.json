@@ -21,6 +21,7 @@
         "controller": "home",
         "function": "fileUpload",
         "isCached": false,
-        "security": {}
+        "file": true,
+        "security": false
     }
 ]

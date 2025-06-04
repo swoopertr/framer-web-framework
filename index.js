@@ -1,4 +1,4 @@
-let http = require("http");
+let http = require("node:http");
 let setting = require("./src/Config/setting");
 let core = require("./src/Core");
 let mimeCore = require("./src/Middleware/mimefilter");
@@ -19,9 +19,9 @@ if (cluster.isMaster) {
   //render.initWatcher();
   router.initRouter(function () {
     http
-      .createServer(function (req, res) {
-        core.postHandler(req, res);
-        mimeCore.catchMime(req, res);
+      .createServer(async function (req, res) {
+        let [reqp, resp] = await core.postHandler(req, res);
+        mimeCore.catchMime(reqp, resp);  
       })
       .listen(setting.ServerPort);
     console.log("browse ==> http://localhost:" + setting.ServerPort);

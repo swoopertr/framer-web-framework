@@ -217,7 +217,7 @@ let getActionName = function (actionId) {
     return result;
 };
 
-let postHandler = function (req, res) {
+let postHandler = async function (req, res, cb) {
     if (req.method !== 'POST') {
         return;
     }
@@ -226,23 +226,29 @@ let postHandler = function (req, res) {
 
         let item = routes[routePath];
         if (item.hasOwnProperty('file') && item.file) {
-            var cookies = core.parseCookies(req);
-            var token = cookies.token;
-            const form = formidable({ uploadDir: setting.downloadFolder }); // upload directory
+            let cookies = core.parseCookies(req);
+            let token = cookies.token;
 
-            form.parse(req, (err, fields, files) => {
-                if (err) {
-                    res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
-                    res.end(String(err));
-                    return;
+            const form = formidable.formidable({ 
+                uploadDir: __dirname + '/../Presentation/Download',
+                filename: (name, ext, path, form) => {
+                    return Date.now() + '_' + path.originalFilename;
                 }
-                req.formData = { fields, files };
             });
-            form.on('end', () => {
-                console.log('Form upload complete');
-                global.events.emit(token + 'form_posted_end');
-            });
-            return;
+            let fields;
+            let files;
+            try {
+                [fields, files] = await form.parse(req);
+                req.formData = [fields, files];
+                console.log(files);
+            } catch (err) {
+                
+                console.error(err);
+                res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
+                res.end(String(err));
+                return;
+            }
+
         } else {
             req.on('data', function (data) {
                 if (req.url)
@@ -258,6 +264,7 @@ let postHandler = function (req, res) {
             });
         }
     }
+    return [req, res];
 };
 
 let getCallerIP = function (req) {
@@ -337,6 +344,29 @@ var sleep = function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+function trim(str) {
+    if (str != undefined) {
+        if (typeof str.replace === 'function') {
+            return str.replace(/^\s+/g, "").replace(/\s+$/g, "");
+        } else {
+            return '';
+        }
+    } else {
+        return '';
+    }
+}
+
+function parseCookies(req) {
+    var cookies = {};
+
+    req.headers.cookie && req.headers.cookie.split(";").forEach(function (param) {
+        var part = param.split("=", 2);
+        cookies[trim(part[0].toLowerCase())] = trim(part[1]) || true;
+    });
+
+    return cookies;
+}
+
 let core = {
     sleep,
     getFolderFiles,
@@ -362,5 +392,6 @@ let core = {
     getExtention,
     getActionName,
     request,
+    parseCookies
 };
 module.exports = core;

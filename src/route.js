@@ -5,29 +5,43 @@ let setting = require('./Config/setting');
 let render = require('./Middleware/render');
 let core = require('./Core');
 let router = new Router();
+let security = require('./Bussiness/securityBusiness');
 
 let loadRouteFile = function () {
     fs.readFile(dir + setting.jsonPath, 'utf-8', async function (err, content) {
         let routes = JSON.parse(content);
-        global.routes = routes;
-        await registerRoutes();
+        
+        await registerRoutes(routes);
+        global.routes ={};
+        for (let i = 0; i < routes.length; i++) {
+            const item = routes[i];
+            if(global.routes.hasOwnProperty(item.path)){
+                console.log('Route already exists: ', item.path);
+                throw new Error('Route already exists: ' + item.path);
+            }else{
+                global.routes[item.path] = item;
+            }
+        }
     });
 };
 
-var registerRoutes = async function () {
-    for (let i = 0; i < global.routes.length; i++) {
-        const item = global.routes[i];
+var registerRoutes = async function (routes) {
+    for (let i = 0; i < routes.length; i++) {
+        const item = routes[i];
         const controller = require(setting.controllerFolder + item.controller);
         const fn = controller[item.function];
         console.log("registering : ", item.path);
-        addRoute(item.method, item.path, fn);
+        addRoute(item.method, item.path, fn, item.security);
         await core.sleep(100);
     }
 };
 
-let addRoute = function (method, path, handler) {
+let addRoute = function (method, path, handler, security) {
     let store = router.register(path);
     store[method] = handler;
+    if (security) {
+        store.security = security;
+    }
 };
 
 function routePath(req, res) {
@@ -36,11 +50,17 @@ function routePath(req, res) {
         render.renderData(res, 'This URL is not exist!', 'text');
         return;
     }
-    let tmp_req = {
-        ...req,
-        params: handler.params,
-    };
-    handler.store[req.method.toLowerCase()](tmp_req, res);
+
+    req.params = handler.params;
+    if (handler.store.security) {
+        security.checkToken(req, res, handler.store.security.usertype, function (reqp) {
+            handler.store[req.method.toLowerCase()](reqp, res);
+        });
+    }else{
+        handler.store[req.method.toLowerCase()](req, res);
+    }
+    
+    
 }
 
 module.exports = {
