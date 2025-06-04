@@ -1,12 +1,13 @@
-FROM node:23-alpine3.20
+FROM node:23-alpine3.22
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN bun install
+RUN npm install
 
 COPY . .
 
 EXPOSE 8080
-CMD ["bun", "index.js"]
+#run npm run start
+CMD ["npm", "run", "start"]
