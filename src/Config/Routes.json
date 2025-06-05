@@ -23,5 +23,14 @@
         "isCached": false,
         "file": true,
         "security": false
+    },
+    {
+        "path": "/command",
+        "method": "post",
+        "controller": "home",
+        "function": "command",
+        "isCached": false,
+        "file": true,
+        "security": false
     }
 ]

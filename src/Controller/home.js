@@ -16,6 +16,14 @@ let home = {
         });
         
     },
+    command: function (req, res) {
+        
+        let formData = req.formData;
+        console.log(formData);
+        runTerminalCommand(formData.cmd, function (result) {
+            render.renderData(res, {data: result}, 'json');
+        });
+    },
     fileUpload : function (req, res) {
          
         //req.on('end',async function () {
