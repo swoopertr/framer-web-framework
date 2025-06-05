@@ -7,6 +7,7 @@ let ramApi = require('./../Data/External/RickAndMorty');
 let url = require('url');
 let util = require('./../Util');
 const { runTerminalCommand } = require('../Helper/command');
+const whisperCommandBuilder = require('./../Helper/whisperHelper/whisper');
 
 let home = {
     main: function (req, res) {
@@ -21,8 +22,11 @@ let home = {
         
         let formData = req.formData;
         console.log(formData);
-        runTerminalCommand(formData.cmd, function (result) {
+        let commandToRun = whisperCommandBuilder.commandBuilder('ggml-large-v3-turbo.bin', 'tr', formData.soundFile, formData.outputFile);
+        runTerminalCommand(commandToRun, function (result) {
+            
             render.renderData(res, {data: result}, 'json');
+
         }, 
         function (error) {
             render.renderData(res, {data: error}, 'json');
