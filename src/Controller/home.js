@@ -13,7 +13,9 @@ let home = {
         //console.log('page viewed');
         runTerminalCommand('node -v', function (result) {
             render.renderData(res, {data: result}, 'json');
-        });
+        }, function (error) {
+            console.log(error);
+        }
         
     },
     command: function (req, res) {
