@@ -15,8 +15,7 @@ let home = {
             render.renderData(res, {data: result}, 'json');
         }, function (error) {
             console.log(error);
-        }
-        
+        });
     },
     command: function (req, res) {
         
@@ -24,7 +23,12 @@ let home = {
         console.log(formData);
         runTerminalCommand(formData.cmd, function (result) {
             render.renderData(res, {data: result}, 'json');
-        });
+        }, 
+        function (error) {
+            render.renderData(res, {data: error}, 'json');
+            console.log(error);
+        }
+        );
     },
     fileUpload : function (req, res) {
          

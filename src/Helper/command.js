@@ -5,11 +5,11 @@ let work = {
     runTerminalCommand : function (command, cb, cbError) {
         exec(command, (error, stdout, stderr) => {
             if (error) {
-                cbError && cbError(error);
+                cbError && cbError({error, stderr});
                 return;
             }
             if (stderr) {
-                cbError && cbError(stderr);
+                cbError && cbError({error, stderr});
                 return;
             }
             cb && cb(stdout);
