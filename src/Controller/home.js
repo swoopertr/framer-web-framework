@@ -26,20 +26,24 @@ let home = {
         console.log(formData);
 
         let commandToRun = whisperCommandBuilder.commandBuilder('ggml-large-v3-turbo.bin', 'tr', formData.fileinfo[0].originalFilename, formData.fileinfo[0].originalFilename);
-        console.log(commandToRun);
+        console.log('commandToRun : ', commandToRun);
         runTerminalCommand(commandToRun, function (result) {
-            console.log(result);
+            try {
+            console.log('result : ', result);
             let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
-            console.log(theJsonFile);
+            console.log('theJsonFile : ', theJsonFile);
             fs.readFile(theJsonFile, 'utf-8', function (err, data) {
                 if (err) {
                     console.log(err);
                 }
-                console.log(data);
+                console.log('data: ', data);
                 console.log(JSON.parse(data));
                 render.renderData(res, { data: JSON.parse(data).transcription }, 'json');
-            });
-            
+            });    
+            } catch (error) {
+                console.log('error', error);
+                render.renderData(res, { error }, 'json');
+            }
         }, function (error) {
             render.renderData(res, { data: error }, 'json');
             console.log(error);
