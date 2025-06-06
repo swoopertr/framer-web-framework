@@ -13,7 +13,7 @@ let work = {
         //whisper-cli -m ./../../../../app/models/ggml-large-v3-turbo.bin -f ./../../../../app/samples/rec1.mp3 -l tr -oj -of ./Presentation/Download/kel
         let whisperCommand ='';
         if(soundFile){
-            whisperCommand =`${WHISPER_CLI} -m ${WHISPER_MODEL_FOLDER_PATH + model} -f ${WHISPER_MODEL_SOUNDFILE_FOLDER_PATH + soundFile} -l ${language} -oj -of ${outputFile}`;
+            whisperCommand =`${WHISPER_CLI} -m ${WHISPER_MODEL_FOLDER_PATH + model} -f ${WHISPER_MODEL_SOUNDFILE_FOLDER_PATH + soundFile} -l ${language} -oj -of ${WHISPER_MODEL_OUTPUT_FOLDER_PATH + outputFile}`;
         }
         
         return whisperCommand;

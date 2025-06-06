@@ -32,5 +32,14 @@
         "isCached": false,
         "file": true,
         "security": false
+    },
+    {
+        "path": "/soundfile",
+        "method": "post",
+        "controller": "home",
+        "function": "soundfileuplad",
+        "isCached": false,
+        "file": true,
+        "security": false
     }
 ]
