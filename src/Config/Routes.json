@@ -37,7 +37,7 @@
         "path": "/soundfile",
         "method": "post",
         "controller": "home",
-        "function": "soundfileuplad",
+        "function": "soundfileuplad2",
         "isCached": false,
         "file": true,
         "security": false

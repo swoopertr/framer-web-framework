@@ -7,13 +7,13 @@ let ramApi = require('./../Data/External/RickAndMorty');
 let url = require('url');
 let util = require('./../Util');
 let fs = require('fs');
-const { runTerminalCommand } = require('../Helper/command');
+const { runTerminalCommand, runSpawnCommand } = require('../Helper/command');
 const whisperCommandBuilder = require('./../Helper/whisperHelper/whisper');
 
 let home = {
     main: function (req, res) {
         //console.log('page viewed');
-        runTerminalCommand('node -v', function (result) {
+        runSpawnCommand('node',['-v'], function (result) {
             render.renderData(res, {data: result}, 'json');
         }, function (error) {
             console.log(error);
@@ -50,6 +50,37 @@ let home = {
         });
     },
 
+
+    soundfileuplad2: function (req, res) {
+        let formData = req.formData;
+        console.log(formData);
+        let commandToRun = whisperCommandBuilder.commandBuilderForSpawn('ggml-large-v3-turbo.bin', 'tr', formData.fileinfo[0].originalFilename, formData.fileinfo[0].originalFilename);
+        console.log('commandToRun : ', commandToRun);
+        runSpawnCommand(commandToRun.command, commandToRun.args, function (result) {
+            try {
+                console.log('result : ', result);
+                let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
+                console.log('theJsonFile : ', theJsonFile);
+                fs.readFile(theJsonFile, 'utf-8', function (err, data) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log('data: ', data);
+                    console.log(JSON.parse(data).transcription);
+                    render.renderData(res, { data: JSON.parse(data).transcription }, 'json');
+                    
+                });
+            }
+            catch (error) {
+                console.log('error', error);
+                render.renderData(res, { error }, 'json');
+            }
+        }, function (error) {
+            render.renderData(res, { data: error }, 'json');
+            console.log(error);
+        });
+        
+    },
     command: function (req, res) {
         
         let formData = req.formData;
