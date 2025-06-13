@@ -22,19 +22,18 @@ let work = {
         const child = spawn(command, prms);
 
         child.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-            cb && cb(data);
-
+            console.log(`stdout: ${data.toString()}`);
+            cb && cb(data.toString());
         });
 
         child.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-            cbError && cbError({ error: data });
+            console.error(`stderr: ${data.toString()}`);
+            //cbError && cbError({ error: data.toString() });
         });
 
         child.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-            cbError && cbError({ error: code });
+            console.log(`child process exited with code ${code.toString()}`);
+            //cbError && cbError({ error: code.toString() });
         });
     }
 
