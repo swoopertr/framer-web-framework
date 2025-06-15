@@ -9,6 +9,7 @@ let util = require('./../Util');
 let fs = require('fs');
 const { runTerminalCommand, runSpawnCommand } = require('../Helper/command');
 const whisperCommandBuilder = require('./../Helper/whisperHelper/whisper');
+const { askToAi } = require('../Helper/ollama');
 
 let home = {
     main: function (req, res) {
@@ -80,6 +81,20 @@ let home = {
             console.log(error);
         });
         
+    },
+
+    asktoai: async function (req, res) {
+        req.on('end',async function () {
+            console.log(req.formData);
+            try {
+                let result = await askToAi(req.formData.question);
+                render.renderData(res, { data: result.response }, 'json');
+            } catch (error) {
+                render.renderData(res, { data: error }, 'json');
+                console.log(error);
+            }
+        });
+
     },
     command: function (req, res) {
         

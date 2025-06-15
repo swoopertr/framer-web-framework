@@ -1,17 +1,17 @@
-const WHISPER_CLI = "whisper-cli";
-const WHISPER_APP_PATH = "./../../../../app/"
-const WHISPER_MODEL_FOLDER_PATH = `${WHISPER_APP_PATH}models/`;
-const WHISPER_MODEL_SOUNDFILE_FOLDER_PATH = `${WHISPER_APP_PATH}samples/`;
-const WEBAPP_DOWNLOAD_FOLDER_PATH = "./Presentation/Download/";
-const WHISPER_MODEL_OUTPUT_FOLDER_PATH = `${WEBAPP_DOWNLOAD_FOLDER_PATH}output/`;
-
-
-// const WHISPER_CLI = "/Users/tunc/Documents/dev/python/whisper.cpp/build/bin/whisper-cli";
-// const WHISPER_APP_PATH = "/Users/tunc/Documents/dev/python/whisper.cpp/"
+// const WHISPER_CLI = "whisper-cli";
+// const WHISPER_APP_PATH = "./../../../../app/"
 // const WHISPER_MODEL_FOLDER_PATH = `${WHISPER_APP_PATH}models/`;
 // const WHISPER_MODEL_SOUNDFILE_FOLDER_PATH = `${WHISPER_APP_PATH}samples/`;
 // const WEBAPP_DOWNLOAD_FOLDER_PATH = "./Presentation/Download/";
 // const WHISPER_MODEL_OUTPUT_FOLDER_PATH = `${WEBAPP_DOWNLOAD_FOLDER_PATH}output/`;
+
+
+const WHISPER_CLI = "/Users/tunc/Documents/dev/python/whisper.cpp/build/bin/whisper-cli";
+const WHISPER_APP_PATH = "/Users/tunc/Documents/dev/python/whisper.cpp/"
+const WHISPER_MODEL_FOLDER_PATH = `${WHISPER_APP_PATH}models/`;
+const WHISPER_MODEL_SOUNDFILE_FOLDER_PATH = `${WHISPER_APP_PATH}samples/`;
+const WEBAPP_DOWNLOAD_FOLDER_PATH = "./Presentation/Download/";
+const WHISPER_MODEL_OUTPUT_FOLDER_PATH = `${WEBAPP_DOWNLOAD_FOLDER_PATH}output/`;
 
 
 

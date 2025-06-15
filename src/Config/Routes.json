@@ -41,5 +41,14 @@
         "isCached": false,
         "file": true,
         "security": false
+    },
+        {
+        "path": "/askai",
+        "method": "post",
+        "controller": "home",
+        "function": "asktoai",
+        "isCached": false,
+        "file": false,
+        "security": false
     }
 ]
