@@ -1,7 +1,7 @@
 const OLLAMA_URL = "http://localhost:11434/";
 const OLLAMA_MODEL = "tinyllama:latest";
 let work = {
-    askToAi : async function (question) {
+    askToAi: async function (question) {
 
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -24,7 +24,7 @@ let work = {
             const result = await response.json();
             console.log(result)
             return result;
-            
+
         } catch (error) {
             console.error(error);
             return {

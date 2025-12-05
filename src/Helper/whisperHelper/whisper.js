@@ -27,7 +27,7 @@ let work = {
     },
     commandBuilderForSpawn: function (model = "ggml-large-v3-turbo.bin", language = 'tr', soundFile, outputFile = 'output') {
         //whisper-cli -m ./../../../../app/models/ggml-large-v3-turbo.bin -f ./../../../../app/samples/rec1.mp3 -l tr -oj -of ./Presentation/Download/kel
-        return { command: WHISPER_CLI, args: ['-m', `${WHISPER_MODEL_FOLDER_PATH + model}`, '-f', `${WEBAPP_DOWNLOAD_FOLDER_PATH + soundFile}`, '-l', `${language}`, '-oj', '-of', `${WHISPER_MODEL_OUTPUT_FOLDER_PATH + soundFile}`, '-t', '8', '-p', '8'] };
+        return { command: WHISPER_CLI, args: ['-m', `${WHISPER_MODEL_FOLDER_PATH + model}`, '-f', `${WEBAPP_DOWNLOAD_FOLDER_PATH + soundFile}`, '-l', `${language}`, '-oj', '-of', `${WHISPER_MODEL_OUTPUT_FOLDER_PATH + soundFile}`, '-t', '4', '-p', '4'] };
     }
 }
 
