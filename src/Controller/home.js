@@ -33,6 +33,11 @@ let home = {
                 console.log('result : ', result);
                 let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
                 console.log('theJsonFile : ', theJsonFile);
+                runSpawnCommand('pwd', [], function (result) {
+                    console.log('result : ', result);
+                }, function (error) {
+                    console.log(error);
+                });
                 fs.readFile(theJsonFile, 'utf-8', function (err, data) {
                     if (err) {
                         console.log(err);
