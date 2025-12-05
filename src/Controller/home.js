@@ -55,7 +55,7 @@ let home = {
     soundfileuplad2: function (req, res) {
         let formData = req.formData;
         console.log(formData);
-        let commandToRun = whisperCommandBuilder.commandBuilderForSpawn('ggml-large-v3-turbo.bin', 'tr', formData.file, formData.fileinfo[0].originalFilename);
+        let commandToRun = whisperCommandBuilder.commandBuilderForSpawn('ggml-large-v3-turbo.bin', 'tr', formData.file);
         console.log('commandToRun : ', commandToRun);
         runSpawnCommand(commandToRun.command, commandToRun.args, function (result) {
             try {
