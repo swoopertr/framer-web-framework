@@ -219,7 +219,7 @@ let getActionName = function (actionId) {
 
 let postHandler = async function (req, res, cb) {
     if (req.method !== 'POST') {
-        return {req, res};
+        return { req, res };
     }
     let routePath = req.url.split('?')[0];
     if (global.routes.hasOwnProperty(routePath)) {
@@ -229,8 +229,8 @@ let postHandler = async function (req, res, cb) {
             let cookies = core.parseCookies(req);
             let token = cookies.token;
 
-            const form = formidable.formidable({ 
-                uploadDir: __dirname + '/../'+ setting.downloadFolder,
+            const form = formidable.formidable({
+                uploadDir: __dirname + '/../' + setting.downloadFolder,
                 filename: (name, ext, path, form) => {
                     return Date.now() + '_' + path.originalFilename;
                 }
@@ -240,10 +240,11 @@ let postHandler = async function (req, res, cb) {
             try {
                 [fields, files] = await form.parse(req);
 
-                req.formData = {...fields, ...files};
-                
+                req.formData = //{...fields, ...files};
+                    req.formData = { file: files[''][0].newFilename };
+
             } catch (err) {
-                
+
                 console.error(err);
                 res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
                 res.end(String(err));
@@ -264,7 +265,7 @@ let postHandler = async function (req, res, cb) {
             });
         }
     }
-    return {req, res};
+    return { req, res };
 };
 
 let getCallerIP = function (req) {
@@ -373,7 +374,7 @@ let preHandler = function (req, res, cb) {
         res.end();
         return;
     }
-    cb && cb(req, res);    
+    cb && cb(req, res);
 };
 
 let core = {

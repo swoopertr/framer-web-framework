@@ -14,8 +14,8 @@ const { askToAi } = require('../Helper/ollama');
 let home = {
     main: function (req, res) {
         //console.log('page viewed');
-        runSpawnCommand('node',['-v'], function (result) {
-            render.renderData(res, {data: result}, 'json');
+        runSpawnCommand('node', ['-v'], function (result) {
+            render.renderData(res, { data: result }, 'json');
         }, function (error) {
             console.log(error);
         });
@@ -30,17 +30,17 @@ let home = {
         console.log('commandToRun : ', commandToRun);
         runTerminalCommand(commandToRun, function (result) {
             try {
-            console.log('result : ', result);
-            let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
-            console.log('theJsonFile : ', theJsonFile);
-            fs.readFile(theJsonFile, 'utf-8', function (err, data) {
-                if (err) {
-                    console.log(err);
-                }
-                console.log('data: ', data);
-                console.log(JSON.parse(data));
-                render.renderData(res, { data: JSON.parse(data).transcription }, 'json');
-            });    
+                console.log('result : ', result);
+                let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
+                console.log('theJsonFile : ', theJsonFile);
+                fs.readFile(theJsonFile, 'utf-8', function (err, data) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log('data: ', data);
+                    console.log(JSON.parse(data));
+                    render.renderData(res, { data: JSON.parse(data).transcription }, 'json');
+                });
             } catch (error) {
                 console.log('error', error);
                 render.renderData(res, { error }, 'json');
@@ -55,12 +55,12 @@ let home = {
     soundfileuplad2: function (req, res) {
         let formData = req.formData;
         console.log(formData);
-        let commandToRun = whisperCommandBuilder.commandBuilderForSpawn('ggml-large-v3-turbo.bin', 'tr', formData.fileinfo[0].originalFilename, formData.fileinfo[0].originalFilename);
+        let commandToRun = whisperCommandBuilder.commandBuilderForSpawn('ggml-large-v3-turbo.bin', 'tr', formData.file, formData.fileinfo[0].originalFilename);
         console.log('commandToRun : ', commandToRun);
         runSpawnCommand(commandToRun.command, commandToRun.args, function (result) {
             try {
                 console.log('result : ', result);
-                let theJsonFile = "./Presentation/Download/output/" + formData.fileinfo[0].originalFilename + ".json";
+                let theJsonFile = "./Presentation/Download/output/" + formData.file + ".json";
                 console.log('theJsonFile : ', theJsonFile);
                 fs.readFile(theJsonFile, 'utf-8', function (err, data) {
                     if (err) {
@@ -69,7 +69,7 @@ let home = {
                     console.log('data: ', data);
                     console.log(JSON.parse(data).transcription);
                     render.renderData(res, { data: JSON.parse(data).transcription }, 'json');
-                    
+
                 });
             }
             catch (error) {
@@ -80,11 +80,11 @@ let home = {
             render.renderData(res, { data: error }, 'json');
             console.log(error);
         });
-        
+
     },
 
     asktoai: async function (req, res) {
-        req.on('end',async function () {
+        req.on('end', async function () {
             console.log(req.formData);
             try {
                 let result = await askToAi(req.formData.question);
@@ -97,37 +97,37 @@ let home = {
 
     },
     command: function (req, res) {
-        
+
         let formData = req.formData;
         console.log(formData);
         let commandToRun = whisperCommandBuilder.commandBuilder('ggml-large-v3-turbo.bin', 'tr', formData.soundFile, formData.outputFile);
         runTerminalCommand(commandToRun, function (result) {
-            
-            render.renderData(res, {data: result}, 'json');
 
-        }, 
-        function (error) {
-            render.renderData(res, {data: error}, 'json');
-            console.log(error);
-        }
+            render.renderData(res, { data: result }, 'json');
+
+        },
+            function (error) {
+                render.renderData(res, { data: error }, 'json');
+                console.log(error);
+            }
         );
     },
-    fileUpload : function (req, res) {
-         
+    fileUpload: function (req, res) {
+
         //req.on('end',async function () {
-            let formData = req.formData;
-            console.log(formData);
-            render.renderData(res, {data: formData}, 'json');
-       // });
-        
-        
+        let formData = req.formData;
+        console.log(formData);
+        render.renderData(res, { data: formData }, 'json');
+        // });
+
+
     },
     RickAndMortyPage: function (req, res) {
         ramApi.getNames(function (result) {
             let data = {
                 data: result,
             };
-            
+
             render.renderHtml(res, view.views["home"]["main"], data);
         });
     },
