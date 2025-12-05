@@ -367,8 +367,18 @@ function parseCookies(req) {
     return cookies;
 }
 
+let preHandler = function (req, res, cb) {
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200, defaults.TheCorsHeaders);
+        res.end();
+        return;
+    }
+    cb && cb(req, res);    
+};
+
 let core = {
     sleep,
+    preHandler,
     getFolderFiles,
     initRouteConfigWatcher,
     queryStringToObject,

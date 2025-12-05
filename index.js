@@ -6,6 +6,8 @@ let render = require("./src/Middleware/render");
 let cluster = require("cluster");
 let router = require("./src/route");
 
+
+
 let numCPUs =
   setting.cpuCount === 0 ? require("os").cpus().length : setting.cpuCount;
 console.log(numCPUs);
@@ -18,10 +20,11 @@ if (cluster.isMaster) {
   render.init();
   //render.initWatcher();
   router.initRouter(function () {
-    http
-      .createServer(async function (req, res) {
-        let handler = await core.postHandler(req, res);
-        mimeCore.catchMime(handler.req,handler.res);
+    http.createServer(async function (req, res) {
+        core.preHandler(req, res,async function(reqp, resp){
+          let handler = await core.postHandler(reqp, resp);
+          mimeCore.catchMime(handler.req, handler.res);
+        });
       })
       .listen(setting.ServerPort);
     console.log("browse ==> http://localhost:" + setting.ServerPort);
