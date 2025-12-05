@@ -66,7 +66,7 @@ let home = {
             try {
                 console.log('result : ', result);
                 let theJsonFile = "./Presentation/Download/output/" + formData.file + ".json";
-                runTerminalCommand('pwd', [], function (result) {
+                runSpawnCommand('node', ['-v'], function (result) {
                     console.log('result : ', result);
                 }, function (error) {
                     console.log(error);
