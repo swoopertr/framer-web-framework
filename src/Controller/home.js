@@ -66,6 +66,11 @@ let home = {
             try {
                 console.log('result : ', result);
                 let theJsonFile = "./Presentation/Download/output/" + formData.file + ".json";
+                runTerminalCommand('pwd', [], function (result) {
+                    console.log('result : ', result);
+                }, function (error) {
+                    console.log(error);
+                });
                 console.log('theJsonFile : ', theJsonFile);
                 fs.readFile(theJsonFile, 'utf-8', function (err, data) {
                     if (err) {
