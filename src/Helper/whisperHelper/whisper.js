@@ -1,6 +1,6 @@
 const WHISPER_CLI = "whisper-cli";
 const WHISPER_APP_PATH = "./../../../../app/"
-const WHISPER_MODEL_FOLDER_PATH = `${WEBAPP_DOWNLOAD_FOLDER_PATH}models/`;
+const WHISPER_MODEL_FOLDER_PATH = `${WHISPER_APP_PATH}models/`;
 const WHISPER_MODEL_SOUNDFILE_FOLDER_PATH = "./Presentation/Download/" //`./../../../../usr/src/app/webapp/Presentation/Download/`;
 const WEBAPP_DOWNLOAD_FOLDER_PATH = "./Presentation/Download/";
 const WHISPER_MODEL_OUTPUT_FOLDER_PATH = `${WEBAPP_DOWNLOAD_FOLDER_PATH}output/`;
