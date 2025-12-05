@@ -23,7 +23,7 @@ let work = {
 
         child.stdout.on('data', (data) => {
             console.log(`stdout: ${data.toString()}`);
-            cb && cb(data.toString());
+            //cb && cb(data.toString());
         });
 
         child.stderr.on('data', (data) => {
@@ -34,6 +34,7 @@ let work = {
         child.on('close', (code) => {
             console.log(`child process exited with code ${code.toString()}`);
             //cbError && cbError({ error: code.toString() });
+            cb && cb(code.toString());
         });
     }
 
