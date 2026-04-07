@@ -1,76 +1,161 @@
-Framer simpliest nodejs web framework ever
-#Version 1.1
-###About
-Simple or Micro framework :) whatever you called.
-It is similar with .net MVC framework structure.
-Make things easier and faster.
+# Framer
 
-### How do I get set up?
+The simplest and no-deps web framework ever.
 
-- clone from git directory
-- then ready to code.
-- zero configuration, if you want to configure, you can configure too.
-- no dependecies at all.
-- so just download and needed nodejs.exe :)
+## Overview
 
-### Start
+Framer is a lightweight, minimalist web framework for Node.js that draws inspiration from ASP.NET MVC architecture. Build REST APIs, HTTP sites, or both with zero configuration required.
 
-- write terminal or command window
+## Installation
 
 ```bash
-"node index.js"
+npm install
 ```
 
-Hola! You make server run. It is too hard.
-
-### Features
-
-- asp.net MVC like framework
-- your application can be a REST/API, HTTP or Both.
-- dynamic route loader.
-- fast as native !!!
-- session and cookie support added.
-
-### Configuration
-
-####Route config:
-
-- Configuration file located at "src/Config/Routes.json" as setting.js.
-  Changing **Routes.json** file in live makes reload the all route configuration.
-
-example:
+## Quick Start
 
 ```bash
-"list":{
-    "get":{
-      "controller":"person", "function":"list"
-    }
-  }
-  ==> http://localhost:8090/list
+npm start
 ```
 
-In this example : "**person**" controller (person.js) run "list" function
+Visit `http://localhost:8080` (or your configured port)
 
-When you change something in "Presentation" layer makes reload related view.
+## Project Structure
 
-####Configure Paths
-You can reconfigure path configurations for your enviroment in **src/Config/setting.js**.
+```
+framer-web-framework/
+├── index.js                    # Server bootstrap
+├── src/
+│   ├── Core.js                 # Core utilities
+│   ├── route.js                # Route handling
+│   ├── Util.js                 # Utilities (JWT, OAuth)
+│   ├── Config/
+│   │   ├── setting.js          # Configuration
+│   │   └── Routes.json         # Route definitions
+│   ├── Controller/             # Your controllers
+│   ├── Bussiness/              # Business logic
+│   ├── Middleware/             # Middleware components
+│   ├── Data/                   # Data layer
+│   └── Helper/                 # Helper utilities
+└── Presentation/
+    ├── assets/                 # Static assets (css, js)
+    ├── Pages/                  # Templates and views
+    └── Download/               # File upload storage
+```
 
-```bach
-exports.cpuCount = 1; //go as much cpu as your machine can.
-exports.root = '/Presentation/';
-exports.rootPath = '/Presentation/assets/'; //determine the assets paths
-exports.viewFolder = '/Presentation/Pages/'; //general wiev folder master template, header and footer.
-exports.allViewFolder = '/Presentation/Pages/views/'; //matches with controller and controller functions
-exports.virtualRootPath = '/virt/';  //means virtual folder - http://localhost:8090/virt/scripts/main.js
+## Features
 
-exports.controllerFolder = './controller/';
+| Feature                 | Description                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| **MVC Architecture**    | ASP.NET MVC-like structure with Controllers, Views, and business logic separation |
+| **Dynamic Routing**     | Routes defined in JSON with runtime hot-reload                                    |
+| **Template Engine**     | Custom `.tht` templates with embedded JavaScript (`<% %>`)                        |
+| **Session Management**  | Cookie-based session handling                                                     |
+| **Cookie Support**      | Full cookie get/set/remove functionality                                          |
+| **File Uploads**        | Formidable-based multipart file upload handling                                   |
+| **Rate Limiting**       | Built-in DDoS protection with configurable limits                                 |
+| **JWT Authentication**  | Token validation and generation utilities                                         |
+| **Google OAuth**        | Ready-to-use Google authentication helpers                                        |
+| **PostgreSQL Support**  | Database connection and query helpers                                             |
+| **Cluster Mode**        | Multi-process server for multi-CPU utilization                                    |
+| **Static File Serving** | Virtual path mapping for assets                                                   |
+| **Caching System**      | In-memory caching with TTL support                                                |
+| **View Partials**       | Reusable HTML partials and master layouts                                         |
+
+## Configuration
+
+### Routes (`src/Config/Routes.json`)
+
+Define your routes in JSON format. Changes to this file are reloaded automatically.
+
+```json
+{
+  "path": "/home",
+  "method": "get",
+  "controller": "home",
+  "function": "main",
+  "isCached": false
+}
+```
+
+Route options:
+
+- `path` - URL path
+- `method` - HTTP method (get, post, put, delete)
+- `controller` - Controller filename (without .js)
+- `function` - Exported function name
+- `isCached` - Enable view caching
+- `file` - Enable file upload handling
+- `security` - Enable token authentication (boolean or object)
+
+### Settings (`src/Config/setting.js`)
+
+Configure your environment:
+
+```javascript
+exports.cpuCount = 0; // 0 = auto-detect CPU cores
+exports.ServerPort = 8080; // Port (also reads PORT env var)
+exports.root = "/Presentation/";
+exports.viewFolder = "/Presentation/Pages/";
+exports.allViewFolder = "/Presentation/Pages/views/";
+exports.controllerFolder = "./src/Controller/";
 exports.jsonPath = "/src/Config/Routes.json";
-exports.ServerPort = 8090;
-
-exports.errorController = './controller/error';
+exports.errorController = "./src/Controller/error";
+exports.downloadFolder = "./Presentation/Download/";
+exports.virtualRootPath = "/virt/";
+exports.tokenExpireTimeLimit = "24h";
 ```
 
-### Contribution guidelines
+## Template Engine
 
-- Write code and make pull request.
+Framer uses `.tht` template files with embedded JavaScript:
+
+```html
+<html>
+  <head>
+    <title><%= this.title %></title>
+  </head>
+  <body>
+    <h1><%= this.message %></h1>
+
+    <% for (let i = 0; i < this.items.length; i++) { %>
+    <li><%= this.items[i] %></li>
+    <% } %> <%%partialName%%>
+    <!-- Include partial -->
+  </body>
+</html>
+```
+
+## Controller Example
+
+```javascript
+// src/Controller/home.js
+exports.main = function (req, res) {
+  res.render("home/main", {
+    title: "Welcome",
+    message: "Hello from Framer!",
+  });
+};
+```
+
+## Middleware
+
+Middleware runs in order:
+
+1. Rate Limiter
+2. Cache
+3. Session
+4. Cookie
+5. Header
+6. MIME Filter
+7. Route Handler
+
+## Scripts
+
+```bash
+npm start          # Start production server
+npm run debug      # Start in debug mode
+npm run format     # Format code with Prettier
+npm run build_image   # Build Docker image
+npm run run_image     # Run Docker container
+```
